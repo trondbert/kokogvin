@@ -64,6 +64,10 @@ body {
 	height: 100%;
 }
 
+img {
+	max-width: 100%;
+}
+
 a:link, a:visited, a:hover {
 	color: #48802c;
 }
@@ -588,6 +592,20 @@ th:hover, tr:hover {
 
 .buttons .save {
 	background-image: url(../images/skin/database_save.png);
+}
+
+.icon-edit {
+	padding-bottom: 40px;
+	padding-right: 40px;
+  background-image: url(../images/icon-edit-32.png);
+  background-repeat: no-repeat;
+}
+
+.icon-new {
+	padding-right: 40px;
+	padding-bottom: 40px;
+  background-image: url(../images/icon-new-32.png);
+  background-repeat: no-repeat;
 }
 
 a.skip {

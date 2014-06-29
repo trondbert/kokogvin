@@ -1,0 +1,17 @@
+<input type="text" ng-model="search" class="search-query" placeholder="Search">
+<table>
+  <thead>
+  <tr>
+    <th>Recipes</th>
+    <th><a href="#/new"><div class="icon-new"></div></a></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr ng-repeat="recipe in recipes | orderBy:'name'">
+    <td>{{recipe.name}}</a></td>
+    <td>
+      <a href="#/edit/{{recipe.$id}}"><div class="icon-edit"></div></a>
+    </td> 
+  </tr>
+  </tbody>
+</table>

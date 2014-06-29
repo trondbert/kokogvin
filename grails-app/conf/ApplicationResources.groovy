@@ -3,7 +3,7 @@ modules = {
         resource url:'js/application.js'
     }
 
-    recipes {
-        resource url:'js/recipes.js'
+    angularapp {
+        resource url:'js/angularapp.js'
     }
 }
