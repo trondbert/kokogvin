@@ -1,0 +1,3 @@
+#!/bin/bash
+
+static-server public 8080 &>logs/kokogvin.log &

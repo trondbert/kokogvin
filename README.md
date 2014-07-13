@@ -14,3 +14,10 @@ Install phantomjs 1.9.7
 
 ./runTests.sh
 
+Deployment:
+The app is set up to be deployed to firebase:
+
+sudo npm install -g firebase-tools
+firebase init
+firebase deploy
+

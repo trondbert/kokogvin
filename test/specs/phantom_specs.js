@@ -10,11 +10,16 @@ page.open('http://localhost:9080', function() {
   phantom.exit();
 });
 
-function findTextInElement(selector) {
-  window.selectorGlobal = selector;
+function assertThat(actual) {
 
-  return page.evaluate(function() {
-    console.log(window.selectorGlobal);
-    return findOnPage(window.selectorGlobal);
-  });
+  assertion = new Object();
+
+  assertion.actual = actual;
+
+  assertion.isEqualTo = function(expected) {
+    if (expected != actual) {
+      throw "Expected " + expected + ", got " + actual;  
+    }
+  }
+  return assertion;
 }

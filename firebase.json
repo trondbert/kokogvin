@@ -1,0 +1,7 @@
+{
+  "firebase": "blinding-fire-2931",
+  "public": "public",
+  "ignore": [
+    "**/.*"
+  ]
+}
