@@ -1,6 +1,42 @@
 <form ng-submit="save()">
-  Name: <input type="text" ng-model="recipe.name" />
-  Tags: <input type="text" ng-model="recipe.tags" />
 
-  <button type="submit" ng-click="save">Oppdater</button>
+  <div class="recipeTop">
+    <div class="recipeLeftSide">
+
+      <img id="recipeImagePreview" class="recipeImagePreview" src="{{recipe.image}}" />
+      <div class="inputField">
+        Bilde: <input type="file" id="recipeImage" custom-on-change="changeImage" />
+      </div>
+
+      <div class="inputField">
+        Navn:<input type="text" ng-model="recipe.name" />
+      </div>
+      <div class="inputField">
+        Kategorier: <input type="text" ng-model="recipe.tags" />
+      </div>
+
+    </div>
+
+    <div class="recipeRightSide">
+
+      <div class="inputField">
+        Ingredienser:
+        <textarea class="ingredients" ng-model="recipe.ingredients"></textarea>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="recipeBottom">
+    <div class="inputField">
+      Slik gjør du:
+      <textarea class="instructions" ng-model="recipe.instructions"></textarea>
+    </div>
+
+    <div class="inputField">
+      <button type="submit" ng-click="save">Oppdater</button>
+    </div>
+  </div>
+
+
 </form>

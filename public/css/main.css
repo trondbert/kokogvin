@@ -14,7 +14,7 @@ html {
 	
 }
 
-div {
+div, textarea {
 	box-sizing: border-box;
 }
 
@@ -103,16 +103,6 @@ img {
 
 .scaffold-list h1 {
 	border: none;
-}
-
-.footer {
-	background: #abbf78;
-	color: #000;
-	clear: both;
-	font-size: 0.8em;
-	margin-top: 1.5em;
-	padding: 1em;
-	min-height: 1em;
 }
 
 .footer a {
@@ -633,4 +623,56 @@ a.skip {
 	font-weight: bold;
 	line-height: 1.7em;
 	padding: 0.2em 0.6em;
+}
+
+.recipeTop {
+	padding-top: 1em;
+}
+
+.recipeLeftSide {
+	width: 49%;
+	display: inline-block;
+	vertical-align: top;
+}
+
+.recipeRightSide {
+	width: 49%;
+	display: inline-block;
+	vertical-align: top;
+	float: right;
+}
+
+.recipeBottom {
+	width: 100%;
+}
+
+.inputField {
+	clear: both;
+	padding: 0 0 1em 0;
+}
+
+.inputField input, .inputField textarea {
+	float: right;
+}
+
+img.recipeImagePreview {
+	height: 16em;
+	clear: both;
+}
+
+textarea.ingredients {
+	width: 100%;
+}
+
+textarea.instructions {
+	width: 100%;
+}
+
+.footer {
+	text-align: center;
+	width: 100%;
+	background-color: #AAAAAA;
+  font-weight: bolder;
+  color: white;
+	padding: 1em 0 1em 0;
 }
