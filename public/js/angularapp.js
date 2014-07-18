@@ -3,7 +3,7 @@ app = angular.module('angularapp', ['ngRoute', 'firebase'])
   
 app.config(function($routeProvider) {
   $routeProvider
-    .when('/', {
+    .when('/:directives?', {
       controller:'ListCtrl',
       templateUrl:'list.html'
     })
@@ -20,11 +20,27 @@ app.config(function($routeProvider) {
     });
 })
 
+if (window.location.href.search("mockStorage") == -1) {
+  app.service('StorageService', function($firebase, fbUrl) {
+    this.findAllRecipes = function() {
+      var recipesRef = new Firebase(fbUrl);
+      return $firebase(recipesRef);
+    }
+  })
+}
+else {
+  app.service('StorageService', function($firebase, fbUrl) {
+    this.findAllRecipes = function() {
+      console.log("Mocked");
+    }
+  })
+}
+
 app.value('fbUrl', 'https://blinding-fire-2931.firebaseio.com/recipes')
  
-app.controller('ListCtrl', function($scope, $firebase, fbUrl) {
-  var recipesRef = new Firebase(fbUrl);
-  $scope.recipes = $firebase(recipesRef);
+app.controller('ListCtrl', function($scope, StorageService) {
+  $scope.recipes = StorageService.findAllRecipes();
+  console.log($scope.recipes);
 })
 
 app.controller('CreateCtrl', function($scope, $location, $firebase, fbUrl) {
