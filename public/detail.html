@@ -3,11 +3,6 @@
   <div class="recipeTop">
     <div class="recipeLeftSide">
 
-      <img id="recipeImagePreview" class="recipeImagePreview" src="{{recipe.image}}" />
-      <div class="inputField">
-        Bilde: <input type="file" id="recipeImage" custom-on-change="changeImage" />
-      </div>
-
       <div class="inputField">
         Navn:<input type="text" ng-model="recipe.name" />
       </div>
@@ -15,12 +10,20 @@
         Kategorier: <input type="text" ng-model="recipe.tags" />
       </div>
 
+      <img id="recipeImagePreview"   class="recipeImagePreview" src="{{recipe.image}}"
+           ng-click="chooseImage()"  ng-show="recipe.image"
+      />
+      <div class="inputField" ng-hide="recipe.image">
+        <a href="" ng-click="chooseImage()">Legg til bilde</a>
+      </div>
+      <input type="file" id="recipeImage" class="hidden" custom-on-change="changeImage" />
+
     </div>
 
     <div class="recipeRightSide">
 
       <div class="inputField">
-        Ingredienser:
+        <H3>Ingredienser:<H3>
         <textarea class="ingredients" ng-model="recipe.ingredients"></textarea>
       </div>
     </div>
@@ -28,8 +31,8 @@
   </div>
 
   <div class="recipeBottom">
+    <H3>Slik gjør du:</H3>
     <div class="inputField">
-      Slik gjør du:
       <textarea class="instructions" ng-model="recipe.instructions"></textarea>
     </div>
 

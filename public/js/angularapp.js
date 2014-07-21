@@ -11,6 +11,10 @@ app.config(function($routeProvider) {
       controller:'EditCtrl',
       templateUrl:'detail.html'
     })
+    .when('/view/:recipeId', {
+      controller:'ViewCtrl',
+      templateUrl:'viewDetail.html'
+    })
     .when('/new', {
       controller:'CreateCtrl',
       templateUrl:'detail.html'
@@ -79,9 +83,13 @@ app.controller('EditCtrl', function($scope, $location, $routeParams, $firebase, 
           $location.path('/')
         }
     }, function(err) {
-        console.log(err)
+        console.log(err); //TODO : better approach?
     });
-  }
+  };
+
+  $scope.chooseImage = function() {
+    $("#recipeImage").trigger('click');
+  };
 
   $scope.changeImage = function() {
     var file = $("#recipeImage")[0].files[0],
@@ -96,7 +104,11 @@ app.controller('EditCtrl', function($scope, $location, $routeParams, $firebase, 
 
     reader.readAsDataURL(file);
   }
-})
+});
+
+app.controller('ViewCtrl', function($scope, $location, $routeParams, $firebase, fbUrl) {
+  $scope.recipe = $firebase(new Firebase(fbUrl + '/' + $routeParams.recipeId));
+});
 
 app.directive('customOnChange', function() {
   'use strict';

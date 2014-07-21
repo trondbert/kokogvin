@@ -1,9 +1,11 @@
 
 <input type="text" ng-model="search" class="search-query" placeholder="Søk">
 
-<div class="table-row" ng-repeat="recipe in recipes | orderByPriority | orderBy:'name' | filter:search">
-  <div class="recipe-info">{{recipe.name}}</div>
-  <div class="recipe-action">
-    <a href="#/edit/{{recipe.$id}}"><div class="icon-edit"></div></a>
-  </div> 
+<div class="table-row">
+  <div class="recipe-info" ng-repeat="recipe in recipes | orderByPriority | orderBy:'name' | filter:search">
+    <a href="#/view/{{recipe.$id}}">
+      <img ng-src="{{recipe.image}}" class="recipeListImage" ng-show="recipe.image"/>
+      <h4>{{recipe.name}}</h4>
+    </a>
+  </div>
 </div>

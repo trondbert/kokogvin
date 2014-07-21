@@ -1,13 +1,13 @@
 
 function getRecipeInfo() {
-  return $(".recipe-info");
+  return $(".table-row .recipe-info");
 }
 
 casper.test.begin('Should have recipes when not mocked', 1, function suite(test) {
   casper.start('http://localhost:9080/', function() {
   });
 
-  casper.waitForSelector(".recipe-info", function() {
+  casper.waitForSelector(".table-row .recipe-info", function() {
   });
 
   casper.then(function() {

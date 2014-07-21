@@ -1,6 +1,6 @@
 
 function getRecipeInfo() {
-  return $(".recipe_info");
+  return $(".table-row .recipe-info");
 }
 
 casper.test.begin('Should not have recipes when mocked', 1, function suite(test) {

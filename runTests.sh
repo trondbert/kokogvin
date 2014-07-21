@@ -7,3 +7,6 @@ casperjs test casperSpecNotMocked.js
 
 # Kill the newest static-server process
 pkill -f -n node.*static-server
+
+# try fn with arguments in tester.evaluate()
+

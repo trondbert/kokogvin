@@ -1,0 +1,38 @@
+<a href="#/edit/{{recipe.$id}}">Rediger oppskrift</a>
+<form ng-submit="save()">
+
+  <div class="recipeTop">
+    <div class="recipeLeftSide">
+
+      <H2>{{recipe.name}}</H2>
+      <div class="inputField">
+        Kategorier: <input type="text" ng-model="recipe.tags" readonly />
+      </div>
+
+      <img id="recipeImagePreview" class="recipeImagePreview" ng-src="{{recipe.image}}" 
+           ng-show="recipe.image"/>
+    </div>
+
+    <div class="recipeRightSide">
+
+      <div class="inputField">
+        <H3>Ingredienser:<H3>
+        <textarea class="ingredients" ng-model="recipe.ingredients" readonly></textarea>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="recipeBottom">
+    <H3>Slik gjør du:</H3>
+    <div class="inputField">
+      <textarea class="instructions" ng-model="recipe.instructions" readonly></textarea>
+    </div>
+
+    <div class="inputField">
+      <button type="submit" ng-click="save">Oppdater</button>
+    </div>
+  </div>
+
+
+</form>

@@ -5,7 +5,7 @@ input, select, textarea {
 }
 
 h1, h2, h3, h4, h5, h6 {
-	line-height: 1.1;
+	line-height: 1.5;
 }
 
 /* BASE LAYOUT */
@@ -16,6 +16,15 @@ html {
 
 div, textarea {
 	box-sizing: border-box;
+}
+
+.hidden {
+	display: none;
+}
+
+a {
+	text-decoration: none;
+	color: black;
 }
 
 html.no-cssgradients {
@@ -602,14 +611,7 @@ a.skip {
 .recipe-info {
 	padding: 0.5em;
 	display: inline-block;
-	width: 89%;
-	vertical-align: top;
-}
-
-.recipe-action {
-	padding: 0.5em;
-	display: inline-block;
-	width: 9%;
+	width: 32%;
 	vertical-align: top;
 }
 
@@ -655,16 +657,25 @@ a.skip {
 	float: right;
 }
 
+.inputField input {
+	width: 70%;
+}
+
+button[type="submit"] {
+	padding: 1.5em;
+	background-color: grey;
+}
+
 img.recipeImagePreview {
-	height: 16em;
+	height: 250px;
 	clear: both;
 }
 
-textarea.ingredients {
-	width: 100%;
+img.recipeListImage {
+	height: 200px;
 }
 
-textarea.instructions {
+textarea {
 	width: 100%;
 }
 
