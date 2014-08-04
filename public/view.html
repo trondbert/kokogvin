@@ -3,7 +3,6 @@
 
   <div class="recipeTop">
     <div class="recipeLeftSide">
-
       <H2>{{recipe.name}}</H2>
       <div class="inputField">
         Kategorier: <input type="text" ng-model="recipe.tags" readonly />
@@ -15,9 +14,9 @@
 
     <div class="recipeRightSide">
 
+      <H3>Ingredienser:</H3>
       <div class="inputField">
-        <H3>Ingredienser:<H3>
-        <textarea class="ingredients" ng-model="recipe.ingredients" readonly></textarea>
+        <div class="ingredients" ng-bind-html="ingredientsWithBreaks"/>
       </div>
     </div>
 
@@ -26,13 +25,12 @@
   <div class="recipeBottom">
     <H3>Slik gjør du:</H3>
     <div class="inputField">
-      <textarea class="instructions" ng-model="recipe.instructions" readonly></textarea>
+      <div class="instructions" ng-bind-html="instructionsWithBreaks" />
     </div>
 
     <div class="inputField">
       <button type="submit" ng-click="save">Oppdater</button>
     </div>
   </div>
-
 
 </form>

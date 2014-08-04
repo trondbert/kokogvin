@@ -10,7 +10,7 @@
         Kategorier: <input type="text" ng-model="recipe.tags" />
       </div>
 
-      <img id="recipeImagePreview"   class="recipeImagePreview" src="{{recipe.image}}"
+      <img id="recipeImagePreview"   class="recipeImagePreview" ng-src="{{recipe.image}}"
            ng-click="chooseImage()"  ng-show="recipe.image"
       />
       <div class="inputField" ng-hide="recipe.image">
@@ -23,15 +23,15 @@
     <div class="recipeRightSide">
 
       <div class="inputField">
-        <H3>Ingredienser:<H3>
-        <textarea class="ingredients" ng-model="recipe.ingredients"></textarea>
+        <h3>Ingredienser:</h3>
+        <textarea id="recipeIngredients" auto-grow class="ingredients" ng-model="recipe.ingredients"></textarea>
       </div>
     </div>
 
   </div>
 
   <div class="recipeBottom">
-    <H3>Slik gjør du:</H3>
+    <h3>Slik gjør du:</h3>
     <div class="inputField">
       <textarea class="instructions" ng-model="recipe.instructions"></textarea>
     </div>
