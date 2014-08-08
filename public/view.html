@@ -5,7 +5,7 @@
     <div class="recipeLeftSide">
       <H2>{{recipe.name}}</H2>
       <div class="inputField">
-        Kategorier: <input type="text" ng-model="recipe.tags" readonly />
+        Kategorier: {{recipe.tags}}
       </div>
 
       <img id="recipeImagePreview" class="recipeImagePreview" ng-src="{{recipe.image}}" 
@@ -16,7 +16,7 @@
 
       <H3>Ingredienser:</H3>
       <div class="inputField">
-        <div class="ingredients" ng-bind-html="ingredientsWithBreaks"/>
+        <div class="ingredients" ng-bind-html="ingredientsWithBreaks"></div>
       </div>
     </div>
 
@@ -25,11 +25,7 @@
   <div class="recipeBottom">
     <H3>Slik gjør du:</H3>
     <div class="inputField">
-      <div class="instructions" ng-bind-html="instructionsWithBreaks" />
-    </div>
-
-    <div class="inputField">
-      <button type="submit" ng-click="save">Oppdater</button>
+      <div class="instructions" ng-bind-html="instructionsWithBreaks"></div>
     </div>
   </div>
 

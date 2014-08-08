@@ -1,18 +1,17 @@
-<form ng-submit="save()">
+<form novalidate ng-submit="save()" ng-class="{submitted:editRecipeForm.submitted}" name="editRecipeForm">
 
   <div class="recipeTop">
     <div class="recipeLeftSide">
 
       <div class="inputField">
-        Navn:<input type="text" ng-model="recipe.name" />
+        Navn:<input type="text" ng-model="recipe.name" ng-required="true" />
       </div>
       <div class="inputField">
-        Kategorier: <input type="text" ng-model="recipe.tags" />
+        Kategorier: <input type="text" ng-model="recipe.tags" ng-required="true" />
       </div>
 
       <img id="recipeImagePreview"   class="recipeImagePreview" ng-src="{{recipe.image}}"
-           ng-click="chooseImage()"  ng-show="recipe.image"
-      />
+           ng-click="chooseImage()"  ng-show="recipe.image" />
       <div class="inputField" ng-hide="recipe.image">
         <a href="" ng-click="chooseImage()">Legg til bilde</a>
       </div>
@@ -24,7 +23,8 @@
 
       <div class="inputField">
         <h3>Ingredienser:</h3>
-        <textarea id="recipeIngredients" auto-grow class="ingredients" ng-model="recipe.ingredients"></textarea>
+        <textarea id="recipeIngredients" auto-grow class="ingredients" 
+            ng-model="recipe.ingredients" ng-required="true"></textarea>
       </div>
     </div>
 
@@ -33,11 +33,12 @@
   <div class="recipeBottom">
     <h3>Slik gjør du:</h3>
     <div class="inputField">
-      <textarea class="instructions" ng-model="recipe.instructions"></textarea>
+      <textarea class="instructions" ng-model="recipe.instructions"
+                ng-required="true"></textarea>
     </div>
 
     <div class="inputField">
-      <button type="submit" ng-click="save">Oppdater</button>
+      <button type="submit">{{recipe.$id ? 'Oppdater' : 'Lagre'}}</button>
     </div>
   </div>
 

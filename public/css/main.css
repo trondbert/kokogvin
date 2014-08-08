@@ -381,13 +381,17 @@ fieldset.embedded legend {
 
 /* same effects for browsers that support HTML5 client-side validation (these have to be specified separately or IE will ignore the entire rule) */
 
-input:invalid, select:invalid, textarea:invalid {
+form.submitted input:invalid, 
+form.submitted select:invalid,
+form.submitted textarea:invalid {
 	background: #fff3f3;
 	border-color: #ffaaaa;
 	color: #cc0000;
 }
 
-input:invalid:focus, select:invalid:focus, textarea:invalid:focus {
+form.submitted input:invalid:focus,
+form.submitted select:invalid:focus,
+form.submitted textarea:invalid:focus {
 	   -moz-box-shadow: 0 0 0.5em #ffaaaa;
 	-webkit-box-shadow: 0 0 0.5em #ffaaaa;
 	        box-shadow: 0 0 0.5em #ffaaaa;
@@ -615,20 +619,40 @@ a.skip {
 	vertical-align: top;
 }
 
-.table-header {
+header {
 	background-color: #efefef;
 	background-image: -moz-linear-gradient(top, #ffffff, #eaeaea);
 	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1, #eaeaea));
 	    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr = '#ffffff', EndColorStr = '#eaeaea');
 	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffffff', EndColorStr='#eaeaea')";
 	color: #666666;
-	font-weight: bold;
+	font-family: 'Tangerine', serif;
+  font-size: 44px;
+  text-shadow: 4px 4px 4px #aaa;
 	line-height: 1.7em;
 	padding: 0.2em 0.6em;
+	text-align: center;
+}
+
+.menuItems {
+  background-color: #eaeaea;
+  margin-bottom: 0.5em;
+  overflow: hidden;
+}
+
+.menuItem {
+  padding: 0 1em 0.5em 1em;
+  float: left;
+}
+
+.menuItemRight {
+  padding: 0 1em 0.5em 1em;
+  float: right;
 }
 
 .recipeTop {
 	padding-top: 1em;
+	overflow: hidden;
 }
 
 .recipeLeftSide {
@@ -686,6 +710,10 @@ textarea.ingredients {
 
 textarea.instructions {
 	height: 15em;
+}
+
+.frontpageImage {
+	width: 100%;
 }
 
 .footer {

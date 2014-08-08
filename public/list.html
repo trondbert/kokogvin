@@ -1,5 +1,5 @@
 
-<input type="text" ng-model="search" class="search-query" placeholder="Søk">
+<input type="text" ng-model="query" class="search-query" placeholder="Søk">
 
 <div class="table-row">
   <div class="recipe-info" ng-repeat="recipe in recipes | orderByPriority | orderBy:'name' | filter:search">
