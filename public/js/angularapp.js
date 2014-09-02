@@ -1,5 +1,21 @@
 app = angular.module('angularapp', ['ngRoute', 'firebase', 'ngSanitize']);
-  
+
+var _fbUrl = 'https://blinding-fire-2931.firebaseio.com'
+app.value('fbRecipesUrl', 'https://blinding-fire-2931.firebaseio.com/recipes');
+app.value('fbUrl',        _fbUrl);
+
+app.factory("simpleLogin", ["$firebaseSimpleLogin", function($firebaseSimpleLogin) {
+  var ref = new Firebase(_fbUrl);
+  return $firebaseSimpleLogin(ref);
+}]);
+
+app.factory("currentUserService", ["simpleLogin", function(simpleLogin) {
+  var getUser = function() {
+    return simpleLogin.$getCurrentUser();
+  };
+  return {getUser: getUser};
+}]);
+
 app.config(function($routeProvider) {
   $routeProvider
     .when('/new', {
@@ -18,8 +34,11 @@ app.config(function($routeProvider) {
       controller:'ListCtrl',
       templateUrl:'list.html'
     })
-    .when('/', {
-      controller:'FrontPageCtrl',
+    .when('/login', {
+      controller:'LoginCtrl',
+      templateUrl:'login.html'
+    })
+    .when('/:directives?', {
       templateUrl:'frontpage.html'
     })
     .otherwise({
@@ -29,13 +48,13 @@ app.config(function($routeProvider) {
 
 if (window.location.href.search("mockStorage") == -1) {
   console.log("Normal storage");
-  app.service('StorageService', function($firebase, fbUrl) {
+  app.service('StorageService', function($firebase, fbRecipesUrl) {
     this.findAllRecipes = function() {
-      var recipesRef = new Firebase(fbUrl);
+      var recipesRef = new Firebase(fbRecipesUrl);
       return $firebase(recipesRef);
     }
     this.findRecipe = function(recipeId) {
-      return $firebase(new Firebase(fbUrl + '/' + recipeId));  
+      return $firebase(new Firebase(fbRecipesUrl + '/' + recipeId));  
     }
     this.addRecipe = function(recipe, recipes) {
       recipes.$add(recipe);
@@ -86,13 +105,43 @@ else {
   })
 }
 
-app.value('fbUrl', 'https://blinding-fire-2931.firebaseio.com/recipes');
+app.controller('ParentCtrl', ["$scope", "$location", "simpleLogin", "currentUserService",
+                              function($scope, $location, simpleLogin, currentUserService) {
+  $scope.logout = function() {
+    alert("Logout");
+    simpleLogin.$logout();
+    $scope.userId = null;
+  };
 
-app.controller('FrontPageCtrl', function($scope, StorageService) {
-  $scope.recipes = StorageService.findAllRecipes();
+  $scope.login = function() {
+    simpleLogin.$login("password", {
+      email: $scope.user.email,
+      password: $scope.user.password})
+    .then(function(user) {
+      console.log("Logged in: " + user.email);
+      $location.path("/list");
+    }, function(error) {
+      alert(error);
+    });
+  }
+
+  var myUserPromise = currentUserService.getUser();
+
+  myUserPromise.then(function(resultUser) {
+     $scope.userId = resultUser && resultUser.email;
+     console.log("ParentCtrl, user: " + (resultUser && resultUser.email));
+  });
+}]);
+
+app.controller('HeaderCtrl', function($scope, $controller, StorageService) {
+  $controller('ParentCtrl', {$scope: $scope});
+  console.log('HeaderCtrl');
 });
- 
-app.controller('ListCtrl', function($scope, StorageService) {
+
+app.controller('ListCtrl', ['$scope', '$controller', 'StorageService', 
+                            function($scope, $controller, StorageService) { 
+  $controller('ParentCtrl', {$scope: $scope}); 
+
   $scope.recipes = StorageService.findAllRecipes();
 
   $scope.search = function (item) {
@@ -104,9 +153,11 @@ app.controller('ListCtrl', function($scope, StorageService) {
 
     return haystack.indexOf(needle) != -1;
   };
-});
+  
+}]);
 
-app.controller('CreateCtrl', function($scope, $location, StorageService) {
+app.controller('CreateCtrl', function($scope, $controller, $location, StorageService) {
+  $controller('ParentCtrl', {$scope: $scope}); 
   console.log("CreateCtrl");
 
   $scope.recipes = StorageService.findAllRecipes();
@@ -122,7 +173,8 @@ app.controller('CreateCtrl', function($scope, $location, StorageService) {
   }
 });
 
-app.controller('EditCtrl', function($scope, $location, $routeParams, StorageService) {
+app.controller('EditCtrl', function($scope, $controller, $location, $routeParams, StorageService) {
+  $controller('ParentCtrl', {$scope: $scope}); 
   $scope.recipe = StorageService.findRecipe($routeParams.recipeId);
 
   $scope.save = function() {
@@ -155,11 +207,20 @@ app.controller('EditCtrl', function($scope, $location, $routeParams, StorageServ
   }
 });
 
-app.controller('ViewCtrl', function($scope, $location, $routeParams, StorageService) {
+app.controller('ViewCtrl', function($scope, $controller, $location, $routeParams, StorageService) {
+  $controller('ParentCtrl', {$scope: $scope}); 
   $scope.recipe = StorageService.findRecipe($routeParams.recipeId);
 
-  $scope.ingredientsWithBreaks =  $scope.recipe.ingredients.replace(/\n/g, '<br/>');
-  $scope.instructionsWithBreaks = $scope.recipe.instructions.replace(/\n/g, '<br/>');
+  $scope.ingredientsWithBreaks =  function() { 
+    return $scope.recipe.ingredients && $scope.recipe.ingredients.replace(/\n/g, '<br/>'); 
+  };
+  $scope.instructionsWithBreaks = function() {
+    return $scope.recipe.instructions && $scope.recipe.instructions.replace(/\n/g, '<br/>');
+  };
+});
+
+app.controller('LoginCtrl', function($scope, $controller, $location, fbUrl) {
+  $controller('ParentCtrl', {$scope: $scope});
 });
 
 app.directive('customOnChange', function() {

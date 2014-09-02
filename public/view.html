@@ -1,32 +1,37 @@
-<a href="#/edit/{{recipe.$id}}">Rediger oppskrift</a>
-<form ng-submit="save()">
+<div class="menu" ng-include src="'menuItems.html'">
+</div>
 
-  <div class="recipeTop">
-    <div class="recipeLeftSide">
-      <H2>{{recipe.name}}</H2>
-      <div class="inputField">
-        Kategorier: {{recipe.tags}}
+<article>
+  <a href="#/edit/{{recipe.$id}}">Rediger oppskrift</a>
+  <form ng-submit="save()">
+
+    <div class="recipeTop">
+      <div class="recipeLeftSide">
+        <H2>{{recipe.name}}</H2>
+        <div class="inputField">
+          Kategorier: {{recipe.tags}}
+        </div>
+
+        <img id="recipeImagePreview" class="recipeImagePreview" ng-src="{{recipe.image}}" 
+             ng-show="recipe.image"/>
       </div>
 
-      <img id="recipeImagePreview" class="recipeImagePreview" ng-src="{{recipe.image}}" 
-           ng-show="recipe.image"/>
+      <div class="recipeRightSide">
+
+        <H3>Ingredienser:</H3>
+        <div class="inputField">
+          <div class="ingredients" ng-bind-html="ingredientsWithBreaks()"></div>
+        </div>
+      </div>
+
     </div>
 
-    <div class="recipeRightSide">
-
-      <H3>Ingredienser:</H3>
+    <div class="recipeBottom">
+      <H3>Slik gjør du:</H3>
       <div class="inputField">
-        <div class="ingredients" ng-bind-html="ingredientsWithBreaks"></div>
+        <div class="instructions" ng-bind-html="instructionsWithBreaks()"></div>
       </div>
     </div>
 
-  </div>
-
-  <div class="recipeBottom">
-    <H3>Slik gjør du:</H3>
-    <div class="inputField">
-      <div class="instructions" ng-bind-html="instructionsWithBreaks"></div>
-    </div>
-  </div>
-
-</form>
+  </form>
+</article>

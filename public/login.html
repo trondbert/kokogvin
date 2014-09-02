@@ -1,0 +1,15 @@
+<div class="menu" ng-include src="'menuItems.html'">
+</div>
+
+<div class="loginBox">
+	<form>
+	  <div class="inputField">
+	    Epost: <input type="text" ng-model="user.email"/>
+	  </div>
+	  <div class="inputField">
+	    Passord: <input type="password" ng-model="user.password"/>
+	  </div>
+
+	  <button ng-click="login()">Logg inn</button>
+	</form>
+</div>

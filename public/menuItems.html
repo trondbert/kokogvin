@@ -1,0 +1,21 @@
+<div class="nav">
+	<ul>
+	  <li>
+	    <a href="#/list">Oppskrifter</a>
+	  </li>
+	  <li>
+	    <a href="#/">Vin</a>
+	  </li>
+	</ul>
+	</div>
+	<div class="nav right">
+	<ul>
+	  <li ng-show="userId">
+	      {{'[' + userId + ']'}}
+	      <ul ng-click="logout()"><li>Logg av</li></ul>
+	  </li>
+	  <li ng-hide="userId">
+	    <a href="/#/login">Logg inn</a>
+	  </li>
+	</ul>
+</div>

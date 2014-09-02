@@ -1,46 +1,51 @@
-<form novalidate ng-submit="save()" ng-class="{submitted:editRecipeForm.submitted}" name="editRecipeForm">
+<div class="menu" ng-include src="'menuItems.html'">
+</div>
 
-  <div class="recipeTop">
-    <div class="recipeLeftSide">
+<article>
+  <form novalidate ng-submit="save()" ng-class="{submitted:editRecipeForm.submitted}" name="editRecipeForm">
+
+    <div class="recipeTop">
+      <div class="recipeLeftSide">
+
+        <div class="inputField">
+          Navn:<input type="text" ng-model="recipe.name" ng-required="true" />
+        </div>
+        <div class="inputField">
+          Kategorier: <input type="text" ng-model="recipe.tags" ng-required="true" />
+        </div>
+
+        <img id="recipeImagePreview"   class="recipeImagePreview" ng-src="{{recipe.image}}"
+             ng-click="chooseImage()"  ng-show="recipe.image" />
+        <div class="inputField" ng-hide="recipe.image">
+          <a href="" ng-click="chooseImage()">Legg til bilde</a>
+        </div>
+        <input type="file" id="recipeImage" class="hidden" custom-on-change="changeImage" />
+
+      </div>
+
+      <div class="recipeRightSide">
+
+        <div class="inputField">
+          <h3>Ingredienser:</h3>
+          <textarea id="recipeIngredients" auto-grow class="ingredients" 
+              ng-model="recipe.ingredients" ng-required="true"></textarea>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="recipeBottom">
+      <h3>Slik gjør du:</h3>
+      <div class="inputField">
+        <textarea class="instructions" ng-model="recipe.instructions"
+                  ng-required="true"></textarea>
+      </div>
 
       <div class="inputField">
-        Navn:<input type="text" ng-model="recipe.name" ng-required="true" />
-      </div>
-      <div class="inputField">
-        Kategorier: <input type="text" ng-model="recipe.tags" ng-required="true" />
-      </div>
-
-      <img id="recipeImagePreview"   class="recipeImagePreview" ng-src="{{recipe.image}}"
-           ng-click="chooseImage()"  ng-show="recipe.image" />
-      <div class="inputField" ng-hide="recipe.image">
-        <a href="" ng-click="chooseImage()">Legg til bilde</a>
-      </div>
-      <input type="file" id="recipeImage" class="hidden" custom-on-change="changeImage" />
-
-    </div>
-
-    <div class="recipeRightSide">
-
-      <div class="inputField">
-        <h3>Ingredienser:</h3>
-        <textarea id="recipeIngredients" auto-grow class="ingredients" 
-            ng-model="recipe.ingredients" ng-required="true"></textarea>
+        <button type="submit">{{recipe.$id ? 'Oppdater' : 'Lagre'}}</button>
       </div>
     </div>
 
-  </div>
 
-  <div class="recipeBottom">
-    <h3>Slik gjør du:</h3>
-    <div class="inputField">
-      <textarea class="instructions" ng-model="recipe.instructions"
-                ng-required="true"></textarea>
-    </div>
-
-    <div class="inputField">
-      <button type="submit">{{recipe.$id ? 'Oppdater' : 'Lagre'}}</button>
-    </div>
-  </div>
-
-
-</form>
+  </form>
+</article>

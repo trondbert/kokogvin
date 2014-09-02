@@ -1,14 +1,19 @@
-
-<div class="recipeListTop">
-  <input type="text" ng-model="query" class="search-query" placeholder="Søk">
-  <div class="newRecipe"><a href="#/new">Ny oppskrift</a></div>
-</div>  
-
-<div class="table-row">
-  <div class="recipe-info" ng-repeat="recipe in recipes | orderByPriority | orderBy:'name' | filter:search">
-    <a href="#/view/{{recipe.$id}}">
-      <img ng-src="{{recipe.image}}" class="recipeListImage" ng-show="recipe.image"/>
-      <h4>{{recipe.name}}</h4>
-    </a>
-  </div>
+<div class="menu" ng-include src="'menuItems.html'">
 </div>
+
+<article>
+
+	<div class="recipeListTop">
+	  <input type="text" ng-model="query" class="search-query" placeholder="Søk">
+	  <div class="newRecipe"><a href="#/new">Ny oppskrift</a></div>
+	</div>  
+
+	<div class="table-row">
+	  <div class="recipe-info" ng-repeat="recipe in recipes | orderByPriority | orderBy:'name' | filter:search">
+	    <a href="#/view/{{recipe.$id}}">
+	      <img ng-src="{{recipe.image}}" class="recipeListImage" ng-show="recipe.image"/>
+	      <h4>{{recipe.name}}</h4>
+	    </a>
+	  </div>
+	</div>
+</article>
