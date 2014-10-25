@@ -9,7 +9,7 @@
 	</div>  
 
 	<div class="table-row">
-	  <div class="recipe-info" ng-repeat="recipe in recipes | orderByPriority | orderBy:'name' | filter:search">
+	  <div class="recipe-info" ng-repeat="recipe in recipes | orderBy: 'name' | filter:search">
 	    <a href="#/view/{{recipe.$id}}">
 	      <img ng-src="{{recipe.image}}" class="recipeListImage" ng-show="recipe.image"/>
 	      <h4>{{recipe.name}}</h4>
