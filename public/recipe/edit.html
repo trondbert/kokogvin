@@ -14,8 +14,11 @@
           Kategorier: <input type="text" ng-model="recipe.tags" ng-required="true" />
         </div>
 
-        <img id="recipeImagePreview"   class="recipeImagePreview" ng-src="{{recipe.image}}"
-             ng-click="chooseImage()"  ng-show="recipe.image" />
+        <div class="recipeImageBox">
+            <span class="recipeImageText">Endre bilde</span>
+            <img id="recipeImagePreview"   class="recipeImagePreview" ng-src="{{recipe.image}}"
+                 ng-click="chooseImage()"  ng-show="recipe.image" />
+        </div>
         <div class="inputField" ng-hide="recipe.image">
           <a href="" ng-click="chooseImage()">Legg til bilde</a>
         </div>

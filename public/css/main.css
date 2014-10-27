@@ -123,10 +123,9 @@ img {
 	height: 16px;
 	width: 16px;
     padding: 0.5em;
-    position: absolute;
-    right: 0;
-	top: 0;
 	text-indent: -9999px;
+    display: inline-block;
+    float: right;
 }
 
 /* CREATE/EDIT FORMS AND SHOW PAGES */
@@ -559,8 +558,16 @@ header {
     font-size: 44px;
     text-shadow: 4px 4px 4px #aaa;
 	line-height: 1.7em;
-	padding: 0.2em 0.6em;
 	text-align: center;
+}
+
+.headerText {
+    width: 89%;
+    display: inline-block;
+}
+.headerSpinner {
+    width: 9%;
+    display: inline-block;
 }
 
 header a:link,
@@ -671,10 +678,29 @@ button[type="submit"] {
 img.recipeImagePreview {
 	height: 250px;
 	clear: both;
+    cursor: pointer;
 }
 
 img.recipeListImage {
 	height: 200px;
+}
+
+.recipeImageBox {
+    position: relative;
+}
+
+span.recipeImageText {
+    position: absolute;
+    z-index: 10;
+    color: white;
+    background-color: black;
+    opacity: 0.7;
+    padding: 0.2em;
+    display: none;
+}
+
+.recipeImageBox:hover span.recipeImageText {
+    display: block;
 }
 
 textarea {
