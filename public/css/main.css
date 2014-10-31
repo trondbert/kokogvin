@@ -678,7 +678,6 @@ button[type="submit"] {
 img.recipeImagePreview {
 	height: 250px;
 	clear: both;
-    cursor: pointer;
 }
 
 img.recipeListImage {

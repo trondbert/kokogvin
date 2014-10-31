@@ -15,9 +15,11 @@
         </div>
 
         <div class="recipeImageBox">
-            <span class="recipeImageText">Endre bilde</span>
-            <img id="recipeImagePreview"   class="recipeImagePreview" ng-src="{{recipe.image}}"
-                 ng-click="chooseImage()"  ng-show="recipe.image" />
+            <a href="">
+              <span class="recipeImageText">Endre bilde</span>
+              <img id="recipeImagePreview"   class="recipeImagePreview" ng-src="{{recipe.image}}"
+                   ng-click="chooseImage()"  ng-show="recipe.image" />
+            </a>
         </div>
         <div class="inputField" ng-hide="recipe.image">
           <a href="" ng-click="chooseImage()">Legg til bilde</a>
