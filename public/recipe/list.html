@@ -3,15 +3,15 @@
 
 <article>
 
-	<div class="recipeListTop">
+	<div class="detailListTop">
 	  <input type="text" ng-model="query" class="search-query" placeholder="Søk">
-	  <div class="newRecipe"><a href="#/recipe/new">Ny oppskrift</a></div>
+	  <div class="newEntity"><a href="#/recipe/new">Ny oppskrift</a></div>
 	</div>  
 
-	<div class="table-row">
-	  <div class="recipe-info" ng-repeat="recipe in recipes | orderBy: 'name' | filter:search">
+	<div class="entityList">
+	  <div class="detail" ng-repeat="recipe in recipes | orderBy: 'name' | filter:search">
 	    <a href="#/recipe/view/{{recipe.$id}}">
-	      <img ng-src="{{recipe.image}}" class="recipeListImage" ng-show="recipe.image"/>
+	      <img ng-src="{{recipe.image}}" class="detailImage" ng-show="recipe.image"/>
 	      <h4>{{recipe.name}}</h4>
 	    </a>
 	  </div>

@@ -541,7 +541,7 @@ a.skip {
 
 /* Kokogvin specific */
 
-.recipe-info {
+.entityList .detail {
 	padding: 0.5em;
 	display: inline-block;
 	width: 32%;
@@ -620,8 +620,12 @@ article {
 	padding: 0.5em;
 }
 
-.recipeListTop {
+.detailListTop {
 	overflow: hidden;
+}
+
+.detailTop img, .detailBottom img {
+    padding: 0 0 1em 0;
 }
 
 .search-query {
@@ -629,30 +633,30 @@ article {
 	float: left;
 }
 
-.newRecipe {
+.newEntity {
   display: inline-block;
   float: right;
 }
 
-.recipeTop {
+.detailTop {
 	padding-top: 1em;
 	overflow: hidden;
 }
 
-.recipeLeftSide {
+.detailLeftSide {
 	width: 49%;
 	display: inline-block;
 	vertical-align: top;
 }
 
-.recipeRightSide {
+.detailRightSide {
 	width: 49%;
 	display: inline-block;
 	vertical-align: top;
 	float: right;
 }
 
-.recipeBottom {
+.detailBottom {
 	width: 100%;
 }
 
@@ -675,20 +679,24 @@ button[type="submit"] {
 	background-color: grey;
 }
 
-img.recipeImagePreview {
+img.detailImagePreview {
 	height: 250px;
 	clear: both;
 }
 
-img.recipeListImage {
+img.detailImagePreview.beverage {
+    height: 350px;
+}
+
+.entityList img.detailImage {
 	height: 200px;
 }
 
-.recipeImageBox {
+.detailImageBox {
     position: relative;
 }
 
-span.recipeImageText {
+span.detailImageText {
     position: absolute;
     z-index: 10;
     color: white;
@@ -698,7 +706,7 @@ span.recipeImageText {
     display: none;
 }
 
-.recipeImageBox:hover span.recipeImageText {
+.detailImageBox:hover span.detailImageText {
     display: block;
 }
 
@@ -712,6 +720,10 @@ textarea.ingredients {
 
 textarea.instructions {
 	height: 15em;
+}
+
+textarea.comments {
+    height: 20em;
 }
 
 .frontpageImage {

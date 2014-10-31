@@ -1,0 +1,29 @@
+<div class="menu" ng-include src="'menuItems.html'">
+</div>
+
+<article>
+    <form ng-submit="save()">
+
+        <div class="detailTop">
+            <div class="detailLeftSide">
+                <H2>{{beverage.name}}</H2>
+
+                <img id="detailImagePreview" class="detailImagePreview" ng-src="{{beverage.image}}"
+                     ng-show="beverage.image"/>
+            </div>
+
+            <div class="detailRightSide">
+
+                <H3>Kommentarer:</H3>
+                <div class="inputField">
+                    <div class="comments" ng-bind-html="commentsWithBreaks()"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="detailBottom">
+        </div>
+
+    </form>
+    <a href="#/beverage/edit/{{beverage.$id}}">Rediger vinen</a>
+</article>

@@ -4,8 +4,8 @@
 <article>
   <form novalidate ng-submit="save()" ng-class="{submitted:editRecipeForm.submitted}" name="editRecipeForm">
 
-    <div class="recipeTop">
-      <div class="recipeLeftSide">
+    <div class="detailTop">
+      <div class="detailLeftSide">
 
         <div class="inputField">
           Navn:<input type="text" ng-model="recipe.name" ng-required="true" />
@@ -14,21 +14,21 @@
           Kategorier: <input type="text" ng-model="recipe.tags" ng-required="true" />
         </div>
 
-        <div class="recipeImageBox">
+        <div class="detailImageBox">
             <a href="">
-              <span class="recipeImageText">Endre bilde</span>
-              <img id="recipeImagePreview"   class="recipeImagePreview" ng-src="{{recipe.image}}"
+              <span class="detailImageText">Endre bilde</span>
+              <img id="detailImagePreview"   class="detailImagePreview" ng-src="{{recipe.image}}"
                    ng-click="chooseImage()"  ng-show="recipe.image" />
             </a>
         </div>
         <div class="inputField" ng-hide="recipe.image">
           <a href="" ng-click="chooseImage()">Legg til bilde</a>
         </div>
-        <input type="file" id="recipeImage" class="hidden" custom-on-change="changeImage" />
+        <input type="file" id="detailImage" class="hidden" custom-on-change="changeRecipeImage" />
 
       </div>
 
-      <div class="recipeRightSide">
+      <div class="detailRightSide">
 
         <div class="inputField">
           <h3>Ingredienser:</h3>
@@ -39,7 +39,7 @@
 
     </div>
 
-    <div class="recipeBottom">
+    <div class="detailBottom">
       <h3>Slik gjør du:</h3>
       <div class="inputField">
         <textarea class="instructions" ng-model="recipe.instructions"

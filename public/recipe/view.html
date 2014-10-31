@@ -2,21 +2,20 @@
 </div>
 
 <article>
-  <a href="#/recipe/edit/{{recipe.$id}}">Rediger oppskrift</a>
   <form ng-submit="save()">
 
-    <div class="recipeTop">
-      <div class="recipeLeftSide">
+    <div class="detailTop">
+      <div class="detailLeftSide">
         <H2>{{recipe.name}}</H2>
         <div class="inputField">
           Kategorier: {{recipe.tags}}
         </div>
 
-        <img id="recipeImagePreview" class="recipeImagePreview" ng-src="{{recipe.image}}" 
+        <img id="detailImagePreview" class="detailImagePreview" ng-src="{{recipe.image}}"
              ng-show="recipe.image"/>
       </div>
 
-      <div class="recipeRightSide">
+      <div class="detailRightSide">
 
         <H3>Ingredienser:</H3>
         <div class="inputField">
@@ -26,12 +25,12 @@
 
     </div>
 
-    <div class="recipeBottom">
+    <div class="detailBottom">
       <H3>Slik gjør du:</H3>
       <div class="inputField">
         <div class="instructions" ng-bind-html="instructionsWithBreaks()"></div>
       </div>
     </div>
-
+    <a href="#/recipe/edit/{{recipe.$id}}">Rediger oppskrift</a>
   </form>
 </article>

@@ -1,0 +1,18 @@
+<div class="menu" ng-include src="'menuItems.html'">
+</div>
+
+<article>
+    <div class="detailListTop">
+        <input type="text" ng-model="query" class="search-query" placeholder="Søk">
+        <div class="newEntity"><a href="#/beverage/new">Ny vin</a></div>
+    </div>
+
+    <div class="entityList">
+        <div class="detail" ng-repeat="beverage in beverages | orderBy: 'name' | filter:search">
+            <a href="#/beverage/view/{{beverage.$id}}">
+                <img ng-src="{{beverage.image}}" class="detailImage" ng-show="beverage.image"/>
+                <h4>{{beverage.name}}</h4>
+            </a>
+        </div>
+    </div>
+</article>

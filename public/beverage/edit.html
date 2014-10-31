@@ -1,0 +1,45 @@
+<div class="menu" ng-include src="'menuItems.html'">
+</div>
+
+<article>
+    <form novalidate ng-submit="save()" ng-class="{submitted:editBeverageForm.submitted}" name="editBeverageForm">
+
+        <div class="detailTop">
+            <div class="detailLeftSide">
+
+                <div class="inputField">
+                    Navn:<input type="text" ng-model="beverage.name" ng-required="true" />
+                </div>
+
+                <div class="detailImageBox">
+                    <a href="">
+                        <span class="detailImageText">Endre bilde</span>
+                        <img id="detailImagePreview" class="detailImagePreview beverage" ng-src="{{beverage.image}}"
+                             ng-click="chooseImage()"  ng-show="beverage.image" />
+                    </a>
+                </div>
+                <div class="inputField" ng-hide="beverage.image">
+                    <a href="" ng-click="chooseImage()">Legg til bilde</a>
+                </div>
+                <input type="file" id="detailImage" class="hidden" custom-on-change="changeBeverageImage" />
+
+            </div>
+
+            <div class="detailRightSide">
+
+                <div class="inputField">
+                    <h3>Kommentarer:</h3>
+                    <textarea id="beverageComments" auto-grow class="comments"
+                              ng-model="beverage.comments" ng-required="true"></textarea>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="detailBottom">
+            <div class="inputField">
+                <button type="submit">{{beverage.$id ? 'Oppdater' : 'Lagre'}}</button>
+            </div>
+        </div>
+    </form>
+</article>
