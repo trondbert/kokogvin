@@ -3,7 +3,7 @@ function addBeverageControllers() {
 
     app.controller('BeverageListCtrl', ['$scope', '$controller', 'StorageService',
         function ($scope, $controller, StorageService) {
-            $controller('ParentCtrl', {$scope: $scope});
+            $controller('ListCtrl', {$scope: $scope});
 
             if ($scope.userId) {
                 $scope.beverages = StorageService.findAllBeverages();
@@ -68,3 +68,4 @@ function addBeverageControllers() {
     });
 
 }
+

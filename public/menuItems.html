@@ -1,21 +1,29 @@
 <div class="nav">
-	<ul>
-	  <li>
-	    <a href="#/recipe/list">Oppskrifter</a>
-	  </li>
-	  <li>
-	    <a href="#/beverage/list">Vin</a>
-	  </li>
-	</ul>
-	</div>
-	<div class="nav right">
-	<ul>
-	  <li ng-show="userId">
-	      {{'[' + userId + ']'}}
-	      <ul ng-click="logout()"><li>Logg av</li></ul>
-	  </li>
-	  <li ng-hide="userId">
-	    <a href="/#/login">Logg inn</a>
-	  </li>
-	</ul>
+  <ul>
+    <li>
+      <a href="#/recipe/list">Oppskrifter</a>
+      <ul>
+        <li><a href="">Middag</a></li>
+        <li><a href="">Småretter</a></li>
+        <li><a href="#/recipe/new">Ny oppskrift</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#/beverage/list">Vin</a>
+      <ul>
+        <li><a href="#/beverage/new">Ny vin</a></li>
+      </ul>
+    </li>
+    <li><a href="" ng-click="showSearch()" ng-show="showSearchInMenu">Søk</a></li>
+  </ul>
+</div>
+<div class="nav right">
+  <ul>
+    <li ng-show="userId">
+      <a href="" ng-click="logout()">Logg ut</a>
+    </li>
+    <li ng-hide="userId">
+      <a href="/#/login">Logg inn</a>
+    </li>
+  </ul>
 </div>

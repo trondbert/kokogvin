@@ -3,7 +3,7 @@ function addRecipeControllers() {
 
     app.controller('RecipeListCtrl', ['$scope', '$controller', 'StorageService',
         function ($scope, $controller, StorageService) {
-            $controller('ParentCtrl', {$scope: $scope});
+            $controller('ListCtrl', {$scope: $scope});
 
             if ($scope.userId) {
                 $scope.recipes = StorageService.findAllRecipes();

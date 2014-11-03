@@ -600,19 +600,17 @@ header a:visited {
 	position: absolute;
 	top: 100%;
 	left: 0px;
-	background-color: black;
-	color: white;
+	background-color: white;
 	padding: 0.3em 0 0.3em 0;
 	z-index: 100;
+	width: 150px;
+	border-style: dotted;
+	border-width: 1px;
+	border-color: black;
 	display: none;
-	width: 100%;
 }
 
-.nav:hover > ul {
-	border: 2px;
-}
-
-.nav:hover > ul > li > ul {
+.nav > ul > li:hover > ul {
 	display: block;
 }
 

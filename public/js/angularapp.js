@@ -38,6 +38,7 @@ function configApp() {
     }
 
     app.controller('ParentCtrl', parentController);
+    app.controller('ListCtrl',   listController);
 
     app.controller('LoginCtrl', function ($scope, $controller) {
         $controller('ParentCtrl', {$scope: $scope});
@@ -45,23 +46,11 @@ function configApp() {
         $("*[ng-model='user.email']").focus();
     });
 
-    app.controller('HeaderCtrl', function ($scope, $controller) {
-        $controller('ParentCtrl', {$scope: $scope});
-    });
-
     addRecipeControllers();
     addBeverageControllers();
 
-    app.directive('customOnChange', function () {
-        'use strict';
-        return {
-            restrict: "A",
-            link: function (scope, element, attrs) {
-                var onChangeFunc = element.scope()[attrs.customOnChange];
-                element.bind('change', onChangeFunc);
-            }
-        };
-    });
+    app.directive('customOnChange', callFunctionSpecifiedOnElement);
+    app.directive('searchFocus',    searchFocus);
 }
 
 function addRoute(provider, url, controller, templateUrl) {
@@ -180,6 +169,16 @@ parentController = ['$scope', '$location', 'fbUrl',
     }
 ];
 
+listController = ['$scope', '$controller', function ($scope, $controller) {
+    $controller('ParentCtrl', {$scope: $scope});
+
+    $scope.showSearchInMenu = true;
+
+    $scope.showSearch = function() {
+        $scope.searchShown = true;
+    }
+}];
+
 var _outstanding_requests = 0;
 
 function toggle_spinner(requests_diff) {
@@ -223,4 +222,28 @@ httpInterceptor = {
         return $q.reject(rejection);
     }
 };
+
+callFunctionSpecifiedOnElement = function () {
+    'use strict';
+    return {
+        restrict: "A",
+        link: function (scope, element, attrs) {
+            var onChangeFunc = element.scope()[attrs.customOnChange];
+            element.bind('change', onChangeFunc);
+        }
+    };
+};
+
+searchFocus = ['$timeout', function($timeout) {
+
+    function link(scope, element) {
+        scope.$watch('searchShown', function(value) {
+            focusIfTrue = function() { value && element[0].focus(); };
+            $timeout(focusIfTrue, 0, false);
+        });
+    }
+    return {
+        link: link
+    };
+}];
 
