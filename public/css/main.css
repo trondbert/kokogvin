@@ -663,12 +663,18 @@ article {
 	padding: 0 0 1em 0;
 }
 
-.inputField input, .inputField textarea {
+.inputField input, .inputField textarea, .inputField span {
 	float: right;
 }
 
-.inputField input {
+.inputField input, .inputField span {
 	width: 70%;
+}
+
+.inputField span {
+    background-color: #ffaaaa;
+    padding: 0.2em;
+    margin: 0.2em 0;
 }
 
 button[type="submit"] {

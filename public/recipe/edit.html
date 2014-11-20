@@ -5,13 +5,14 @@
   <form novalidate ng-submit="save()" ng-class="{submitted:editRecipeForm.submitted}" name="editRecipeForm">
 
     <div class="detailTop">
-      <div class="detailLeftSide">
+      <div class = "detailLeftSide">
 
-        <div class="inputField">
+        <div class = "inputField">
           Navn:<input type="text" ng-model="recipe.name" ng-required="true" />
         </div>
         <div class="inputField">
-          Kategorier: <input type="text" ng-model="recipe.tags" ng-required="true" />
+          Kategorier: <input type="text" name="recipeTags" ng-model="recipe.tags" ng-required="true" categories />
+            <span ng-show="editRecipeForm.recipeTags.$error.categories">The value is not a valid integer!</span>
         </div>
 
         <div class="detailImageBox">

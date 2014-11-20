@@ -23,6 +23,8 @@ function configApp() {
         addRoute($routeProvider, '/beverage/view/:beverageId',  'BeverageViewCtrl',   'beverage/view.html');
         addRoute($routeProvider, '/beverage/list',              'BeverageListCtrl',   'beverage/list.html');
         addRoute($routeProvider, '/login',                      'LoginCtrl',          'login.html');
+        addRoute($routeProvider, '/massUpload',                 'MassUploadCtrl',     'massUpload/view.html');
+        
         addRoute($routeProvider, '/:directives?',               null,                 'frontpage.html');
 
         $routeProvider.otherwise({redirectTo: '/'});
@@ -48,9 +50,11 @@ function configApp() {
 
     addRecipeControllers();
     addBeverageControllers();
+    addMassUploadController();
 
     app.directive('customOnChange', callFunctionSpecifiedOnElement);
     app.directive('searchFocus',    searchFocus);
+    //app.directive('categories',     categoriesValidator);
 }
 
 function addRoute(provider, url, controller, templateUrl) {
@@ -238,7 +242,7 @@ searchFocus = ['$timeout', function($timeout) {
 
     function link(scope, element) {
         scope.$watch('searchShown', function(value) {
-            focusIfTrue = function() { value && element[0].focus(); };
+            var focusIfTrue = function() { value && element[0].focus(); };
             $timeout(focusIfTrue, 0, false);
         });
     }
@@ -247,3 +251,35 @@ searchFocus = ['$timeout', function($timeout) {
     };
 }];
 
+categoriesValidator = function() {
+
+    this.validCategoryValueSets = [["middag", "smårett"]];
+
+    this.validator = function(modelValue, viewValue) {
+        var _this = this;
+        var allValid = true;
+        this.validCategoryValueSets.forEach(function (categoryValues) {
+            allValid = allValid && _this.containsAtLeastOne(viewValue, categoryValues);
+        });
+        return allValid;
+    };
+
+    this.containsAtLeastOne = function(viewValue, validValues) {
+        validValues.forEach(function(validValue) {
+            console.log("Checking " + validValue + " and " + viewValue);
+            if (/ validValue /.test(" " + viewValue + " "))
+                return true;
+        });
+        return false;
+    }
+
+    /*return {
+        require: 'ngModel',
+        link: function(scope, element, attrs, ctrl) {
+            ctrl.$validators.categories = this.validator;
+        }
+    };*/
+};
+
+catVal = new categoriesValidator();
+console.log(catVal.validator("foo", "foo"));
