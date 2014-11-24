@@ -65,7 +65,7 @@ function findImage() {
 	if [ "-$imageUrl" = "-" ]; then
 		imageFilename="no_image.jpg"
 	else
-		# curl "http://www.aperitif.no$imageUrl" > "$1.jpg"
+		curl "http://www.aperitif.no$imageUrl" > "$1.jpg"
 		imageFilename="$1.jpg"
 	fi
 	echo $imageFilename

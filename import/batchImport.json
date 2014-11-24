@@ -195,7 +195,7 @@ ingredients : "1 grønn squash i små terninger\n2 vårløk i strimler\n2 fedd f
 instructions : "Forvarm ovnen til 200 grader.\n\nVarm smør og olje i en stekepanne og stek oppdelt squash, vårløk og hvitløk til det er mykt.\nVisp sammen egg og fløte/melk og tilsett salt og pepper.\nHell eggeblandingen over grønnsakene og fordel tomater og halve artisjokker på toppen. Dryss over ost.\nSett frittataen inn i ovnen og stek den i 20-25 minutter, til den har stivnet og begynner å få farge. La frittataen hvile noen minutter før den serveres.\nFrittataen kan serveres både varm, lunken og kald, gjerne med brød og en god salat ved siden av.\n\nTIps: Frittata er den italienske versjonen av den klassiske omeletten. \n\n Flere eggende retter finner du her",
 portions : "4",
 tags : "",
-image : "oneline_oppskrift8.html.jpg"
+image : "no_image.jpg"
 },
 { //oppskrift9.html
 name : "Potetsalat",
@@ -295,5 +295,5 @@ portions : "4",
 description : "",
 tags: "",
 image : "oneline_aperitif_oppskrift9.html.jpg"
-},
+}
 ];
