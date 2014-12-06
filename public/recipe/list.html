@@ -10,7 +10,7 @@
 	<div class="entityList">
 	  <div class="detail" ng-repeat="recipe in recipes | orderBy: 'name' | filter:search">
 	    <a href="#/recipe/view/{{recipe.$id}}">
-	      <img ng-src="{{recipe.image}}" class="detailImage" ng-show="recipe.image"/>
+	      <img ng-src="{{recipe.image}}" class="detailImage"/>
 	      <h4>{{recipe.name}}</h4>
 	    </a>
 	  </div>

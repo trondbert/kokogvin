@@ -4,11 +4,7 @@ function addRecipeControllers() {
     app.controller('RecipeListCtrl', ['$scope', '$controller', 'StorageService',
         function ($scope, $controller, StorageService) {
             $controller('ListCtrl', {$scope: $scope});
-
-            if ($scope.userId) {
-                $scope.recipes = StorageService.findAllRecipes();
-                console.log("Found all " + $scope.recipes + ".");
-            }
+            var constructed = false;
 
             $scope.search = function (item) {
                 if (!$scope.query) {
@@ -20,6 +16,19 @@ function addRecipeControllers() {
                 return haystack.indexOf(needle) != -1;
             };
 
+            $scope.imageAdded = function(imgSnap, prevVal) {
+                var recipe = findRecipeById($scope.recipes, imgSnap.val().recipeID);
+                if (recipe != null) {
+                    recipe.image = imgSnap.val().image;
+
+                    if (constructed) $scope.$applyAsync();
+                }
+            };
+
+            if ($scope.userId) {
+                $scope.recipes = StorageService.findAllRecipes($scope.imageAdded);
+            }
+            constructed = true;
         }]);
 
     app.controller('RecipeCreateCtrl', function ($scope, $controller, $location, StorageService) {
@@ -36,15 +45,14 @@ function addRecipeControllers() {
 
             $scope.recipe = {};
             $location.path('/');
-        }
+        };
 
         $scope.changeRecipeImage = function() { $scope.changeImage($scope.recipe); };
     });
 
     app.controller('RecipeEditCtrl', function ($scope, $controller, $location, $routeParams, StorageService) {
         $controller('ParentCtrl', {$scope: $scope});
-
-        $scope.recipe = StorageService.findRecipe($routeParams.recipeId);
+        var constructed = false;
 
         $scope.save = function () {
             $scope.editRecipeForm.submitted = true;
@@ -56,38 +64,35 @@ function addRecipeControllers() {
                 window.scrollTo(0, 0);
             }
         };
-
-        $scope.chooseImage = function () {
-            $("#recipeImage").trigger('click');
+        $scope.changeRecipeImage = function() { 
+            $scope.changeImage($scope.recipe); 
         };
 
-        $scope.changeImage = function () {
-            var file = $("#recipeImage")[0].files[0],
-                reader = new FileReader();
-
-            reader.onloadend = function (e) {
-                var imageBase64 = e.target.result;
-                console.log(imageBase64);
-                $scope.recipe.image = imageBase64;
-                $scope.$apply();
-            };
-
-            reader.readAsDataURL(file);
-        }
+        $scope.recipe = StorageService.findRecipe($routeParams.recipeId, function(snap, imagesRef) {
+                $scope.setImageOnRecipe(snap, imagesRef);
+                if (constructed) $scope.$applyAsync();
+            }
+        );
+        constructed = true;
     });
 
     app.controller('RecipeViewCtrl', function ($scope, $controller, $location, $routeParams, StorageService) {
         $controller('ParentCtrl', {$scope: $scope});
-        $scope.recipe = StorageService.findRecipe($routeParams.recipeId);
-        console.log("recipe id: " + $scope.recipe.$id);
+        var constructed = false;
+        
         $scope.ingredientsWithBreaks = function () {
             return $scope.recipe.ingredients && $scope.recipe.ingredients.replace(/\n/g, '<br/>');
         };
         $scope.instructionsWithBreaks = function () {
             return $scope.recipe.instructions && $scope.recipe.instructions.replace(/\n/g, '<br/>');
         };
+
+        $scope.recipe = StorageService.findRecipe($routeParams.recipeId, function(snap, imagesRef) {
+                $scope.setImageOnRecipe(snap, imagesRef);
+                if (constructed) $scope.$applyAsync();
+            }
+        );
+        constructed = true;
     });
-
-
 }
 

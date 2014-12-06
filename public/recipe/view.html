@@ -1,15 +1,13 @@
 <div class="menu" ng-include src="'menuItems.html'">
 </div>
 
-<article>
+<article class="view">
   <form ng-submit="save()">
 
     <div class="detailTop">
       <div class="detailLeftSide">
         <H2>{{recipe.name}}</H2>
-        <div class="inputField">
-          Kategorier: {{recipe.tags}}
-        </div>
+        <div class="inputField" ng-show="recipe.portions"><i>{{recipe.portions}} porsjoner</i></div>
 
         <img id="detailImagePreview" class="detailImagePreview" ng-src="{{recipe.image}}"
              ng-show="recipe.image"/>
@@ -21,6 +19,9 @@
         <div class="inputField">
           <div class="ingredients" ng-bind-html="ingredientsWithBreaks()"></div>
         </div>
+
+        <H3 ng-show="recipe.tags">Kategorier</H3>
+        <div ng-show="recipe.tags" class="inputField recipeTags">{{recipe.tags}}</div>
       </div>
 
     </div>
