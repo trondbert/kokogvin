@@ -9,7 +9,7 @@
         <H2>{{recipe.name}}</H2>
         <div class="inputField" ng-show="recipe.portions"><i>{{recipe.portions}} porsjoner</i></div>
 
-        <img id="detailImagePreview" class="detailImagePreview" ng-src="{{recipe.image}}"
+        <img id="detailImagePreview" class="detailImagePreview" ng-src="{{recipe.image || defaultImageData}}"
              ng-show="recipe.image"/>
       </div>
 
