@@ -545,7 +545,7 @@ a.skip {
 .entityList .detail {
 	padding: 0.5em;
 	display: inline-block;
-	width: 32%;
+	width: 33%;
 	vertical-align: top;
 }
 
@@ -644,13 +644,13 @@ article {
 }
 
 .detailLeftSide {
-	width: 49%;
+	width: 44%;
 	display: inline-block;
 	vertical-align: top;
 }
 
 .detailRightSide {
-	width: 49%;
+	width: 55%;
 	display: inline-block;
 	vertical-align: top;
 	float: right;
@@ -726,6 +726,15 @@ textarea {
 
 textarea.ingredients {
 	height: 20em;
+    display: inline-block;
+    width: 49%;
+    float: left;
+}
+
+div.ingredients {
+    display: inline-block;
+    width: 49%;
+    float: left;
 }
 
 textarea.instructions {

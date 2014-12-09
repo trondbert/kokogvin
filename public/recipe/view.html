@@ -9,19 +9,17 @@
         <H2>{{recipe.name}}</H2>
         <div class="inputField" ng-show="recipe.portions"><i>{{recipe.portions}} porsjoner</i></div>
 
-        <img id="detailImagePreview" class="detailImagePreview" ng-src="{{recipe.image || defaultImageData}}"
-             ng-show="recipe.image"/>
+        <img id="detailImagePreview" class="detailImagePreview" ng-src="{{recipe.image || placeholderImage}}" />
       </div>
 
       <div class="detailRightSide">
 
         <H3>Ingredienser:</H3>
         <div class="inputField">
-          <div class="ingredients" ng-bind-html="ingredientsWithBreaks()"></div>
+          <div class="ingredients" ng-bind-html="ingredients1WithBreaks()"></div>
+          <div class="ingredients" ng-bind-html="ingredients2WithBreaks()"></div>
         </div>
 
-        <H3 ng-show="recipe.tags">Kategorier</H3>
-        <div ng-show="recipe.tags" class="inputField recipeTags">{{recipe.tags}}</div>
       </div>
 
     </div>
