@@ -1,0 +1,7 @@
+#!/bin/bash
+
+pkill -f -n node.*http-server
+
+echo "Processes still running:"
+./listStaticServers
+echo "===================="

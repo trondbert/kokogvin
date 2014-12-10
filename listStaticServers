@@ -1,3 +1,4 @@
 #!/bin/bash
 
-ps -ef | grep node.*static-server
+ps -ef | grep node.*http-server | grep -v "grep"
+
