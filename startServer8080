@@ -1,3 +1,0 @@
-#!/bin/bash
-
-node static-server.js 8080 public &>logs/kokogvin.log &

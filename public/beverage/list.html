@@ -8,7 +8,7 @@
     </div>
 
     <div class="entityList">
-        <div class="detail" ng-repeat="beverage in beverages | orderBy: 'name' | filter:search">
+        <div class="detail" ng-repeat="beverage in beverages | orderBy: 'name' | filter:search">
             <a href="#/beverage/view/{{beverage.$id}}">
                 <img ng-src="{{beverage.image}}" class="detailImage" ng-show="beverage.image"/>
                 <h4>{{beverage.name}}</h4>

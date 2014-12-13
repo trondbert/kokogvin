@@ -1,5 +1,7 @@
 
-function storageService($firebase, fbRecipesUrl, fbBeveragesUrl, fbImagesUrl) {
+function storageService($firebase, fbUrls, fbRecipesUrl, fbBeveragesUrl, fbImagesUrl) {
+
+    this.fbRootRef = new Firebase(fbUrls.root);
 
     this.findAllRecipes = function (imageAddedFn) {
         var recipesRef = new Firebase(fbRecipesUrl);
@@ -135,5 +137,19 @@ function storageService($firebase, fbRecipesUrl, fbBeveragesUrl, fbImagesUrl) {
             });
         });
     }
+
+    this.loggedIn = function() {
+        return this.fbRootRef.getAuth();
+    };
+    this.authWithPassword = function(credentials, callback) {
+        this.fbRootRef.authWithPassword(credentials, callback);
+    };
+    this.onAuth = function(callback) {
+        this.fbRootRef.onAuth(callback);
+    };
+    this.logOut = function() {
+        this.fbRootRef.unauth();
+    };
+
 }
 
