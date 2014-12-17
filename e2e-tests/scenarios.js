@@ -1,4 +1,5 @@
 'use strict';
+var shared = require('./shared/shared.js');
 
 describe('kokogvin', function () {
 
@@ -13,7 +14,7 @@ describe('kokogvin', function () {
 
         browser.get('#/recipe/list');
 
-        it('should show login box', function () {
+        it('shows login box', function () {
             expect(element.all(by.css('.loginBox'))).not.toBe(null);
         });
     });
@@ -22,34 +23,47 @@ describe('kokogvin', function () {
 
         beforeEach(function() {
             browser.get('#/recipe/list');
-
-            element(by.model('user.email')).sendKeys('foo');
-            element(by.model('user.password')).sendKeys('bar');
-            element(by.css('.loginBox form button')).click();
-
-            browser.driver.wait(function() {
-                return browser.driver.getCurrentUrl().then(function(url) {
-                    return /list\/?$/.test(url);
-                });
-            });
+            shared.login();
         });
 
-        it('should show recipes', function () {
+        it('shows recipes', function () {
             expect(element.all(by.css('.detail a h4')).count()).toEqual(3);
         });
 
-        it('should filter recipes') {
-            element(by.text)
-        }
+        it('filters recipes', function () {
+            element(by.linkText("Søk")).click();
+            expect(element(by.model("query"))).not.toBe(null);
+            element(by.model("query")).sendKeys("Las");
+            expect(element.all(by.css('.detail a h4')).count()).toEqual(1);
+            expect(element(by.css('.detail a h4')).getText()).toEqual("Lasagne");
+        });
     });
+
+    describe('list wines', function () {
+
+        beforeEach(function() {
+            browser.get('#/beverage/list');
+            shared.login();
+            element(by.linkText("Vin")).click();
+        });
+
+        it('shows wines', function () {
+            browser.debugger();
+            expect(element.all(by.css('.detail a h4')).count()).toEqual(4);
+        });
+
+        it('filters wines', function () {
+            element(by.linkText("Søk")).click();
+            element(by.model("query")).sendKeys("Dine");
+            expect(element.all(by.css('.detail a h4')).count()).toEqual(1);
+            expect(element(by.css('.detail a h4')).getText()).toEqual("Wine Dine 69");
+
+            element(by.model("query")).clear();
+            element(by.model("query")).sendKeys("Rioja");
+            expect(element.all(by.css('.detail a h4')).count()).toEqual(2);
+            expect(element.all(by.css('.detail')).first().getText()).toMatch('Rioja 123');
+            expect(element.all(by.css('.detail')).get(1).getText() ).toMatch('Rioja Majoralis');
+        });
+    });
+
 });
-
-function waitForAWhile(howLong) {
-    var counter = 0;
-
-    browser.driver.wait(function() {
-        counter++;
-        console.log(counter);
-        return counter > howLong;
-    });
-}

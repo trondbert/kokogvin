@@ -8,14 +8,15 @@
             <div class="detailLeftSide">
 
                 <div class="inputField">
-                    Navn:<input type="text" ng-model="beverage.name" ng-required="true" />
+                    <label for="name">Navn:</label>
+                    <input type="text" id="name" ng-model="beverage.name" ng-required="true" />
                 </div>
 
                 <div class="detailImageBox">
                     <a href="">
                         <span class="detailImageText">Endre bilde</span>
                         <img id="detailImagePreview" class="detailImagePreview beverage" ng-src="{{beverage.image}}"
-                             ng-click="chooseImage()"  ng-show="beverage.image" />
+                             ng-click="chooseImage()" ng-show="beverage.image" />
                     </a>
                 </div>
                 <div class="inputField" ng-hide="beverage.image">
@@ -30,7 +31,7 @@
                 <div class="inputField">
                     <h3>Kommentarer:</h3>
                     <textarea id="beverageComments" auto-grow class="comments"
-                              ng-model="beverage.comments" ng-required="true"></textarea>
+                              ng-model="beverage.comments" ng-required="true" title="Kommentarer"></textarea>
                 </div>
             </div>
 

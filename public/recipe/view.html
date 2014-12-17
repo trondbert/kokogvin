@@ -2,34 +2,39 @@
 </div>
 
 <article class="view">
-  <form ng-submit="save()">
+    <form ng-submit="save()">
 
-    <div class="detailTop">
-      <div class="detailLeftSide">
-        <H2>{{recipe.name}}</H2>
-        <div class="inputField" ng-show="recipe.portions"><i>{{recipe.portions}} porsjoner</i></div>
+        <div class="detailTop">
+            <div class="detailLeftSide">
+                <H2>{{recipe.name}}</H2>
 
-        <img id="detailImagePreview" class="detailImagePreview" ng-src="{{recipe.image || placeholderImage}}" />
-      </div>
+                <div class="inputField" ng-show="recipe.portions"><i>{{recipe.portions}} porsjoner</i></div>
 
-      <div class="detailRightSide">
+                <img id="detailImagePreview" class="detailImagePreview" ng-src="{{recipe.image || placeholderImage}}"
+                     src=""/>
+            </div>
 
-        <H3>Ingredienser:</H3>
-        <div class="inputField">
-          <div class="ingredients" ng-bind-html="ingredients1WithBreaks()"></div>
-          <div class="ingredients" ng-bind-html="ingredients2WithBreaks()" ng-show="recipe.ingredients2"></div>
+            <div class="detailRightSide">
+
+                <H3>Ingredienser:</H3>
+
+                <div class="inputField">
+                    <div class="ingredients" ng-bind-html="ingredients1WithBreaks()"></div>
+                    <div class="ingredients" ng-bind-html="ingredients2WithBreaks()"
+                         ng-show="recipe.ingredients2"></div>
+                </div>
+
+            </div>
+
         </div>
 
-      </div>
+        <div class="detailBottom">
+            <H3>Slik gjør du:</H3>
 
-    </div>
-
-    <div class="detailBottom">
-      <H3>Slik gjør du:</H3>
-      <div class="inputField">
-        <div class="instructions" ng-bind-html="instructionsWithBreaks()"></div>
-      </div>
-    </div>
-    <a href="#/recipe/edit/{{recipe.$id}}">Rediger oppskrift</a>
-  </form>
+            <div class="inputField">
+                <div class="instructions" ng-bind-html="instructionsWithBreaks()"></div>
+            </div>
+        </div>
+        <a href="/#/recipe/edit/{{recipe.$id}}">Rediger oppskrift</a>
+    </form>
 </article>

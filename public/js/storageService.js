@@ -17,8 +17,8 @@ function storageService($firebase, fbUrls, fbRecipesUrl, fbBeveragesUrl, fbImage
         var service = this;
         var recipe = $firebase(new Firebase(fbRecipesUrl + '/' + recipeId)).$asObject();
         recipe.$loaded().then(function() {
-            recipe.ingredients1 = recipe.ingredients.split("~*/|")[0];
-            recipe.ingredients2 = recipe.ingredients.split("~*/|")[1];
+            recipe.ingredients1 = recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[0];
+            recipe.ingredients2 = recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[1];
             service.findImage(recipe, imageFoundFn);
         });
         return recipe;
@@ -29,7 +29,7 @@ function storageService($firebase, fbUrls, fbRecipesUrl, fbBeveragesUrl, fbImage
             {   "name": recipe.name,
                 "tags": recipe.tags,
                 "instructions": recipe.instructions,
-                "ingredients": recipe.ingredients1 + "~*/|" + recipe.ingredients2,
+                "ingredients": recipe.ingredients1 + INGREDIENTS_COLUMN_BREAK + recipe.ingredients2,
                 "portions": recipe.portions
             }
         );
@@ -49,7 +49,7 @@ function storageService($firebase, fbUrls, fbRecipesUrl, fbBeveragesUrl, fbImage
             currentRecipe.name = recipe.name;
             currentRecipe.tags = recipe.tags;
             currentRecipe.instructions = recipe.instructions;
-            currentRecipe.ingredients = recipe.ingredients1 + "~*/|" + recipe.ingredients2;
+            currentRecipe.ingredients = recipe.ingredients1 + INGREDIENTS_COLUMN_BREAK + recipe.ingredients2;
             currentRecipe.portions = recipe.portions;
             return currentRecipe;
         }).then(function (snapshot) { snapshot || console.log("Error"); },
@@ -122,6 +122,7 @@ function storageService($firebase, fbUrls, fbRecipesUrl, fbBeveragesUrl, fbImage
         });
     };
 
+    (function util() {}(this.deleteDefaultImages));
     this.deleteDefaultImages = function () {
         var imagesRef = new Firebase(fbImagesUrl);
 
@@ -136,7 +137,7 @@ function storageService($firebase, fbUrls, fbRecipesUrl, fbBeveragesUrl, fbImage
                }
             });
         });
-    }
+    };
 
     this.loggedIn = function() {
         return this.fbRootRef.getAuth();

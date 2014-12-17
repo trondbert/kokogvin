@@ -11,7 +11,7 @@ function mimetype(filename) {
 var http = require("http"),
     url = require("url"),
     path = require("path"),
-    fs = require("fs")
+    fs = require("fs"),
     port = process.argv[2] || 8888,
     www_root = process.cwd() + "/" + ( process.argv[3] || "" );
 
@@ -19,14 +19,14 @@ console.log(process.cwd());
  
 http.createServer(function(request, response) {
   var uri = url.parse(request.url).pathname
-    , filename = path.join(www_root, uri);
+    , filename = www_root + uri;
   console.log(filename);
   
   path.exists(filename, function(exists) {
     if(!exists) {
       response.writeHead(404, {"Content-Type": "text/plain"});
       response.write("404 Not Found\n");
-      response.end();
+      response.end(null);
       return;
     }
  
@@ -36,13 +36,13 @@ http.createServer(function(request, response) {
       if(err) {        
         response.writeHead(500, {"Content-Type": "text/plain"});
         response.write(err + "\n");
-        response.end();
+        response.end(null);
         return;
       }
  
       response.writeHead(200, {"Content-Type": mimetype(filename)});
-      response.write(file, "binary");
-      response.end();
+      response.write(file);
+      response.end(null);
     });
   });
 }).listen(parseInt(port, 10));

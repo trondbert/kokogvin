@@ -1,10 +1,10 @@
 
-var page = require('webpage').create();
+var page = require('webpage').create(null);
 
 page.open('http://localhost:9080', function() {
   page.injectJs("test_utils.js");
 
-  heading = page.evaluate(function() { return $(".heading").text() });
+  var heading = page.evaluate(function() { return $(".heading").text() });
   assertThat(heading).isEqualTo("Oppskrifter");
 
   phantom.exit();
@@ -12,7 +12,7 @@ page.open('http://localhost:9080', function() {
 
 function assertThat(actual) {
 
-  assertion = new Object();
+  var assertion = {};
 
   assertion.actual = actual;
 
@@ -20,6 +20,6 @@ function assertThat(actual) {
     if (expected != actual) {
       throw "Expected " + expected + ", got " + actual;  
     }
-  }
+  };
   return assertion;
 }

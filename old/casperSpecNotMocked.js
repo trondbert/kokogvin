@@ -11,7 +11,7 @@ casper.test.begin('Should have recipes when not mocked', 1, function suite(test)
   });
 
   casper.then(function() {
-    elements = this.evaluate(getRecipeInfo);
+    var elements = this.evaluate(getRecipeInfo);
     this.echo(elements.length);
     test.assert(elements.length > 0, "Recipes available when not mocked");
   });

@@ -2,60 +2,65 @@
 </div>
 
 <article>
-  <form novalidate ng-submit="save()" ng-class="{submitted:editRecipeForm.submitted}" name="editRecipeForm">
+    <form novalidate ng-submit="save()" ng-class="{submitted:editRecipeForm.submitted}" name="editRecipeForm">
 
-    <div class="detailTop">
-      <div class = "detailLeftSide">
+        <div class="detailTop">
+            <div class="detailLeftSide">
 
-        <div class = "inputField">
-          Navn:<input type="text" ng-model="recipe.name" ng-required="true" />
-        </div>
-        <div class="inputField">
-          Kategorier: <input type="text" name="recipeTags" ng-model="recipe.tags" ng-required="true" categories />
-            <span ng-show="editRecipeForm.recipeTags.$error.categories">The value is not a valid integer!</span>
-        </div>
-        <div class="inputField">
-          Porsjoner: <input type="text" name="recipePortions" ng-model="recipe.portions" />
-        </div>        
+                <div class="inputField">
+                    <label for="name">Navn:</label>
+                    <input type="text" id="name" ng-model="recipe.name" ng-required="true"/>
+                </div>
+                <div class="inputField">
+                    <label for="recipeTags">Kategorier:</label>
+                    <input type="text" id="recipeTags" ng-model="recipe.tags" ng-required="true" categories/>
+                    <span ng-show="editRecipeForm.recipeTags.$error.categories">Må ha gyldige kategorier</span>
+                </div>
+                <div class="inputField">
+                    <label for="recipePortions">Porsjoner:</label>
+                    <input type="text" id="recipePortions" ng-model="recipe.portions"/>
+                </div>
 
-        <div class="detailImageBox">
-            <a href="">
-              <span class="detailImageText">{{recipe.image ? 'Endre bilde' : 'Legg til bilde'}}</span>
-              <img id="detailImagePreview"   class="detailImagePreview" ng-src="{{recipe.image || placeholderImage}}"
-                   ng-click="chooseImage()" />
-            </a>
-        </div>
-        <input type="file" id="detailImage" class="hidden" custom-on-change="changeRecipeImage" />
+                <div class="detailImageBox">
+                    <a href="">
+                        <span class="detailImageText">{{recipe.image ? 'Endre bilde' : 'Legg til bilde'}}</span>
+                        <img id="detailImagePreview" class="detailImagePreview"
+                             ng-src="{{recipe.image || placeholderImage}}"
+                             ng-click="chooseImage()" src=""/>
+                    </a>s
+                </div>
+                <input type="file" id="detailImage" class="hidden" custom-on-change="changeRecipeImage"/>
 
-      </div>
+            </div>
 
-      <div class="detailRightSide">
+            <div class="detailRightSide">
 
-        <div class="inputField">
-          <h3>Ingredienser:</h3>
-          <textarea id="recipeIngredients1" auto-grow class="ingredients" 
-              ng-model="recipe.ingredients1" ng-required="true"></textarea>
+                <div class="inputField">
+                    <h3>Ingredienser:</h3>
+          <textarea id="recipeIngredients1" auto-grow class="ingredients"
+                    ng-model="recipe.ingredients1" ng-required="true" title="Ingredienser"></textarea>
           <textarea id="recipeIngredients2" auto-grow class="ingredients"
-	      ng-model="recipe.ingredients2"></textarea>		
+                    ng-model="recipe.ingredients2" title="Ingredienser"></textarea>
+                </div>
+            </div>
+
         </div>
-      </div>
 
-    </div>
+        <div class="detailBottom">
+            <h3>Slik gjør du:</h3>
 
-    <div class="detailBottom">
-      <h3>Slik gjør du:</h3>
-      <div class="inputField">
+            <div class="inputField">
         <textarea class="instructions" ng-model="recipe.instructions"
-                  ng-required="true"></textarea>
-      </div>
+                  ng-required="true" title="Slik gjør du"></textarea>
+            </div>
 
-      <div class="inputField">
-        <button type="submit">{{recipe.$id ? 'Oppdater' : 'Lagre'}}</button>
-      </div>
+            <div class="inputField">
+                <button type="submit">{{recipe.$id ? 'Oppdater' : 'Lagre'}}</button>
+            </div>
 
-        <a href="" ng-click="remove()" ng-show="recipe.$id">Slett oppskriften!</a>
-    </div>
+            <a href="" ng-click="remove()" ng-show="recipe.$id">Slett oppskriften!</a>
+        </div>
 
 
-  </form>
+    </form>
 </article>
