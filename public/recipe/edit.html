@@ -27,7 +27,7 @@
                         <img id="detailImagePreview" class="detailImagePreview"
                              ng-src="{{recipe.image || placeholderImage}}"
                              ng-click="chooseImage()" src=""/>
-                    </a>s
+                    </a>
                 </div>
                 <input type="file" id="detailImage" class="hidden" custom-on-change="changeRecipeImage"/>
 
@@ -37,10 +37,10 @@
 
                 <div class="inputField">
                     <h3>Ingredienser:</h3>
-          <textarea id="recipeIngredients1" auto-grow class="ingredients"
-                    ng-model="recipe.ingredients1" ng-required="true" title="Ingredienser"></textarea>
-          <textarea id="recipeIngredients2" auto-grow class="ingredients"
-                    ng-model="recipe.ingredients2" title="Ingredienser"></textarea>
+                    <textarea id="recipeIngredients1" auto-grow class="ingredients"
+                        ng-model="recipe.ingredients1" ng-required="true" title="Ingredienser"></textarea>
+                    <textarea id="recipeIngredients2" auto-grow class="ingredients"
+                        ng-model="recipe.ingredients2" title="Ingredienser"></textarea>
                 </div>
             </div>
 
@@ -50,8 +50,8 @@
             <h3>Slik gjør du:</h3>
 
             <div class="inputField">
-        <textarea class="instructions" ng-model="recipe.instructions"
-                  ng-required="true" title="Slik gjør du"></textarea>
+                <textarea class="instructions" ng-model="recipe.instructions"
+                          ng-required="true" title="Slik gjør du"></textarea>
             </div>
 
             <div class="inputField">
@@ -60,7 +60,6 @@
 
             <a href="" ng-click="remove()" ng-show="recipe.$id">Slett oppskriften!</a>
         </div>
-
 
     </form>
 </article>

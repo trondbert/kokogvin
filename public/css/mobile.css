@@ -10,27 +10,8 @@
 		padding: 0.25em;
 	}
 
-	/* Hide individual steps in pagination, just have next & previous */
-	.pagination .step, .pagination .currentStep {
-		display: none;
-	}
-
-	.pagination .prevLink {
-		float: left;
-	}
-
-	.pagination .nextLink {
-		float: right;
-	}
-
-	/* pagination needs to wrap around floated buttons */
-	.pagination {
-		overflow: hidden;
-	}
-
 	/* slightly smaller margin around content body */
-	fieldset,
-	.property-list {
+	fieldset {
 		padding: 0.3em 1em 1em;
 	}
 
@@ -54,21 +35,6 @@
 
 	.scaffold-list thead th {
 		text-align: center;
-	}
-
-	/* stack form elements */
-	.fieldcontain {
-		margin-top: 0.6em;
-	}
-
-	.fieldcontain label,
-	.fieldcontain .property-label,
-	.fieldcontain .property-value {
-		display: block;
-		float: none;
-		margin: 0 0 0.25em 0;
-		text-align: left;
-		width: auto;
 	}
 
 	.errors ul,

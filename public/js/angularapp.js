@@ -30,6 +30,7 @@ function configApp() {
         addRoute($routeProvider, '/recipe/edit/:recipeId', 'RecipeEditCtrl', 'recipe/edit.html');
         addRoute($routeProvider, '/recipe/view/:recipeId', 'RecipeViewCtrl', 'recipe/view.html');
         addRoute($routeProvider, '/recipe/list', 'RecipeListCtrl', 'recipe/list.html');
+        addRoute($routeProvider, '/recipe/list/:tags', 'RecipeListCtrl', 'recipe/list.html');
         addRoute($routeProvider, '/beverage/new', 'BeverageCreateCtrl', 'beverage/edit.html');
         addRoute($routeProvider, '/beverage/edit/:beverageId', 'BeverageEditCtrl', 'beverage/edit.html');
         addRoute($routeProvider, '/beverage/view/:beverageId', 'BeverageViewCtrl', 'beverage/view.html');
@@ -121,8 +122,12 @@ parentController = ['$scope', '$location', 'fbUrls', 'StorageService',
         $scope.setImageOnRecipe = function (snap) {
             var imageRef = snap.val();
             if (imageRef) {
-                $scope.recipe.image = imageRef[Object.keys(imageRef)[0]].image;
+                $scope.recipe.image = utils.firstEntryInMap(imageRef).image;
             }
+        };
+
+        $scope.entityAdded = function() {
+            $scope.$applyAsync();
         };
 
         $scope.placeholderImage = placeholderImage;
@@ -140,7 +145,7 @@ parentController = ['$scope', '$location', 'fbUrls', 'StorageService',
     }];
 
 listController = ['$scope', '$controller', function ($scope, $controller) {
-    $controller('ParentCtrl', {$scope: $scope});
+    $controller('ParentCtrl', {$scope: $scope} );
 
     $scope.showSearchInMenu = true;
 
@@ -295,3 +300,6 @@ logMsg = function (message, logLevel) {
     }
 };
 
+var utils = {
+    firstEntryInMap : function(it) { return it[Object.keys(it)[0]]; }
+};

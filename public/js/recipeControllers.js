@@ -20,15 +20,12 @@ function recipeFinder($rootScope)
     };
 }
 
-function addRecipeControllers()
-{
-    app.controller('RecipeListCtrl', ['$scope', '$controller', 'StorageService',
-                              function ($scope, $controller, StorageService)
-        {
+function addRecipeControllers() {
+    app.controller('RecipeListCtrl', ['$scope', '$controller', '$routeParams', 'StorageService',
+                              function ($scope, $controller, $routeParams, StorageService) {
             $controller('ListCtrl', {$scope: $scope});
 
-            $scope.search = function (item)
-            {
+            $scope.search = function (item) {
                 if (!$scope.query) {
                     return true;
                 }
@@ -38,18 +35,27 @@ function addRecipeControllers()
                 return haystack.indexOf(needle) != -1;
             };
 
-            $scope.imageAdded = function(imgSnap)
-            {
-                var recipe = findRecipeById($scope.recipes, imgSnap.val().recipeID);
-                if (recipe != null) {
-                    recipe.image = imgSnap.val().image;
+            $scope.imageAdded = function(imgSnap) {
+                var imageRef = imgSnap.val();
+                if (imageRef == null) return;
 
+                imageRef = imageRef.image ? imageRef : utils.firstEntryInMap(imageRef);
+                var recipe = findRecipeById($scope.recipes, imageRef.recipeID);
+                if (recipe != null) {
+                    recipe.image = imageRef.image;
                     $scope.$applyAsync();
                 }
             };
 
             if ($scope.userId) {
-                $scope.recipes = StorageService.findAllRecipes($scope.imageAdded);
+                if ($routeParams.tags) {
+                    $scope.recipes = StorageService.findRecipesByTags(  ['middag'],
+                                                                        $scope.entityAdded,
+                                                                        $scope.imageAdded);
+                } else {
+                    $scope.recipes = StorageService.findAllRecipes($scope.imageAdded);
+                }
+                $scope.$applyAsync();
             }
         }
     ]);
