@@ -66,4 +66,18 @@ describe('kokogvin', function () {
         });
     });
 
+    describe('view recipes', function() {
+        beforeEach(function() {
+            browser.get('#/recipe/list');
+            shared.login();
+        });
+
+        it ('shows a recipe', function() {
+            element(by.linkText('Bacalao')).click();
+            browser.debugger();
+            expect(element(by.css(".instructions")).getText()).toEqual('Just do it');
+        });
+
+    });
+
 });

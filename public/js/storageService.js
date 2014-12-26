@@ -1,53 +1,57 @@
 
-function storageService($firebase, fbUrls, fbRecipesUrl, fbBeveragesUrl, fbImagesUrl) {
+function storageService($firebase, fbUrls) {
 
     this.fbRootRef = new Firebase(fbUrls.root);
 
-    this.findAllRecipes = function (imageAddedFn) {
-        var recipesRef = new Firebase(fbRecipesUrl);
-        var recipes = $firebase(recipesRef).$asArray();
-        recipes.$loaded().then(function() {
-            var imagesRef = new Firebase(fbImagesUrl);
-            imagesRef.on("child_added", imageAddedFn);
+    this.findAllRecipes = function (recipeFoundCB, imageAddedFn) {
+        var service = this;
+        var recipesRef = new Firebase(fbUrls.recipes);
+        recipesRef.on("child_added", function(recipeSnap) {
+            var recipe = recipeSnap.val();
+            recipe.$id = recipeSnap.key();
+            recipeFoundCB(recipe);
+
+            var image = localCache.findRecipeImage(recipeSnap.key());
+            if (image) {
+                imageAddedFn(image);
+            } else {
+                service.findImage( { $id: recipeSnap.key() }, imageAddedFn);
+            }
         });
-        return recipes;
     };
 
-    this.findRecipe = function (recipeId, imageFoundFn) {
+    this.findRecipe = function (recipeId, recipeFoundFn, imageFoundFn) {
         var service = this;
-        var recipe = $firebase(new Firebase(fbRecipesUrl + '/' + recipeId)).$asObject();
+        var recipe = $firebase(new Firebase(fbUrls.recipes + '/' + recipeId)).$asObject();
         recipe.$loaded().then(function() {
-            recipe.ingredients1 = recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[0];
-            recipe.ingredients2 = recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[1];
-            recipe.ingredients1 = recipe.ingredients1 || "";
-            recipe.ingredients2 = recipe.ingredients2 || "";
+            recipe.ingredients1 = recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[0] || "";
+            recipe.ingredients2 = recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[1] || "";
+            recipeFoundFn(recipe);
             service.findImage(recipe, imageFoundFn);
         });
-        return recipe;
     };
 
-    this.addRecipe = function (recipe) {
-        var recipesRef = new Firebase(fbRecipesUrl);
+    this.addRecipe = function (recipe, callbackFn) {
+        var recipesRef = new Firebase(fbUrls.recipes);
         var newRecipe = {   "name": recipe.name,
             "tags": recipe.tags,
             "instructions": recipe.instructions,
             "ingredients": recipe.ingredients1 + INGREDIENTS_COLUMN_BREAK + recipe.ingredients2,
-            "portions": recipe.portions
+            "portions": recipe.portions || ""
         };
         this.setSpecialTags(newRecipe);
         var newRecipeRef = recipesRef.push(newRecipe);
         recipe.$id = newRecipeRef.key();
 
         if (recipe.image) {
-            this.updateOrInsertImageForRecipe(recipe);
+            this.updateOrInsertImageForRecipe(recipe, callbackFn);
         } else {
-            //TODO: delete image
+            callbackFn(recipe.$id);
         }
-        return recipe.$id;
     };
 
-    this.updateRecipe = function (recipe) {
-        var recipeRef = $firebase(new Firebase(fbRecipesUrl + "/" + recipe.$id));
+    this.updateRecipe = function (recipe, callbackFn) {
+        var recipeRef = $firebase(new Firebase(fbUrls.recipes + "/" + recipe.$id));
         var service = this;
         recipeRef.$transaction(function (currentRecipe) {
             currentRecipe.name = recipe.name;
@@ -56,28 +60,36 @@ function storageService($firebase, fbUrls, fbRecipesUrl, fbBeveragesUrl, fbImage
             currentRecipe.ingredients = recipe.ingredients1 + INGREDIENTS_COLUMN_BREAK + recipe.ingredients2;
             currentRecipe.portions = recipe.portions;
             service.setSpecialTags(currentRecipe);
-            return currentRecipe;
-        }).then(function (snapshot) { snapshot || console.log("Error"); },
+        }).then(function (snapshot) {
+                if (snapshot) {
+                    if (recipe.image ) {
+                        service.updateOrInsertImageForRecipe(recipe, callbackFn);
+                    } else {
+                        callbackFn(recipe.$id);
+                        //TODO: delete image
+                    }
+                    debugMsg("Finished updateRecipe then");
+                    return;
+                }
+                console.log("Error");
+            },
             function (err) { console.log(err);
             }
         );
-
-        if (recipe.image ) {
-            this.updateOrInsertImageForRecipe(recipe);
-        } else {
-            //TODO: delete image
-        }
     };
+
     this.removeRecipe = function (recipe, callbackFn) {
-        var recipeRef = new Firebase(fbRecipesUrl + "/" + recipe.$id);
+        var recipeRef = new Firebase(fbUrls.recipes + "/" + recipe.$id);
         recipeRef.remove(callbackFn);
     };
 
     this.findRecipesByTags = function(tags, recipeFoundCB, imageFoundCB) {
-        var service = this, recipes = [];
-        var recipesRef = new Firebase(fbRecipesUrl);
+        var service = this;
+        var firstTag = tags[0];
+        var recipesRef = new Firebase(fbUrls.recipes);
+        debugMsg("tag_"  + firstTag);
         recipesRef
-            .orderByChild("tag_middag")
+            .orderByChild("tag_"  + firstTag)
             .startAt(true)
             .endAt(true)
             .once("value", function(snap) {
@@ -85,29 +97,28 @@ function storageService($firebase, fbUrls, fbRecipesUrl, fbBeveragesUrl, fbImage
 
                 Object.keys(snap.val()).forEach(function(key) {
                     var recipe = snap.val()[key];
-                    debugMsg("Found recipe: " + recipe);
+                    if (!utils.containsAllTags(recipe, tags)) return;
+
                     recipe.$id = key;
-                    recipes.push(recipe);
-                    recipeFoundCB();
+                    recipeFoundCB(recipe);
                     service.findImage(recipe, imageFoundCB);
                 });
             });
-        return recipes;
     };
 
     this.findAllBeverages = function () {
-        var beveragesRef = new Firebase(fbBeveragesUrl);
+        var beveragesRef = new Firebase(fbUrls.beverages);
         return $firebase(beveragesRef).$asArray();
     };
     this.findBeverage = function (beverageId) {
         console.log("finding beverage " + beverageId);
-        return $firebase(new Firebase(fbBeveragesUrl + '/' + beverageId)).$asObject();
+        return $firebase(new Firebase(fbUrls.beverages + '/' + beverageId)).$asObject();
     };
     this.addBeverage = function (beverage, beverages) {
         beverages.$add(beverage);
     };
     this.updateBeverage = function (beverage) {
-        var beverageRef = $firebase(new Firebase(fbBeveragesUrl + "/" + beverage.$id));
+        var beverageRef = $firebase(new Firebase(fbUrls.beverages + "/" + beverage.$id));
         beverageRef.$transaction(function (currentBeverage) {
             currentBeverage.name = beverage.name;
             currentBeverage.image = beverage.image;
@@ -126,38 +137,57 @@ function storageService($firebase, fbUrls, fbRecipesUrl, fbBeveragesUrl, fbImage
     this.setSpecialTags = function(recipe) {
         recipe.tag_middag = !!/middag/.test(recipe.tags);
         recipe.tag_fisk = !!/fisk/.test(recipe.tags);
-        recipe.tag_kjøtt = !!/kjøtt/.test(recipe.tags);
+        recipe.tag_kjoett = !!/kjøtt/.test(recipe.tags);
     };
 
     this.findImage = function(recipe, callbackFn) {
-        var imagesRef = new Firebase(fbImagesUrl);
-        return imagesRef
+        var cachedImage = localCache.findRecipeImage(recipe.$id);
+        if (cachedImage) {
+            recipe.image = cachedImage.image;
+            callbackFn();
+            return;
+        }
+        this.findFirebaseImage(recipe, callbackFn);
+    };
+
+    this.findFirebaseImage = function(recipe, callbackFn) {
+        var imagesRef = new Firebase(fbUrls.images);
+            imagesRef
             .orderByChild("recipeID")
             .startAt(recipe.$id)
             .endAt(recipe.$id)
             .limitToFirst(1)
-            .once('value', function (snap) { callbackFn(snap, imagesRef); });
+            .once('value', function (snap) {
+                var image = snap.val();
+                if (!image) { return; }
+
+                if (!image.image) { image = utils.firstEntryInMap(image); }
+                localCache.storeRecipeImage(image);
+                recipe.image = image.image;
+                callbackFn(image, imagesRef);
+            });
     };
 
-    this.updateOrInsertImageForRecipe = function(recipe) {
-        this.findImage(recipe, function saveImage(snap, imagesRef) {
-            var imageRef = snap.val();
-            if (imageRef) {
-                imageRef[Object.keys(imageRef)[0]].image = recipe.image;
-                imagesRef.update(imageRef);
+    this.updateOrInsertImageForRecipe = function(recipe, callbackFn) {
+        this.findFirebaseImage(recipe, function (image, imagesRef) {
+            if (image) {
+                image[Object.keys(image)[0]].image = recipe.image;
+                imagesRef.update(image);
             } else {
-                imageRef = imagesRef.push();
-                imageRef.set({
+                image = imagesRef.push();
+                image.set({
                     "recipeID": recipe.$id,
                     "image": recipe.image
                 });
             }
+            localCache.storeRecipeImage(recipe);
+            callbackFn(recipe.$id);
         });
     };
 
     (function util() {}(this.deleteDefaultImages));
     this.deleteDefaultImages = function () {
-        var imagesRef = new Firebase(fbImagesUrl);
+        var imagesRef = new Firebase(fbUrls.images);
 
         var images = $firebase(imagesRef).$asArray();
 
@@ -165,7 +195,7 @@ function storageService($firebase, fbUrls, fbRecipesUrl, fbBeveragesUrl, fbImage
             images.forEach( function(img) {
                if (img.image == placeholderImage || img.image == defaultImageDataOld) {
                    console.log("Match");
-                   var recipeRef = new Firebase(fbImagesUrl + "/" + img.$id);
+                   var recipeRef = new Firebase(fbUrls.images + "/" + img.$id);
                    recipeRef.remove();
                }
             });

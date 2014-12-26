@@ -1,10 +1,16 @@
 
 function addBeverageControllers() {
 
+    app.controller('BeverageCtrl', ['$scope', function($scope) {
+            window.beveragesScope = $scope;
+        }
+    ]);
+
     app.controller('BeverageListCtrl', ['$scope', '$controller', 'StorageService',
                                function ($scope, $controller, StorageService)
         {
             $controller('ListCtrl', {$scope: $scope});
+            $controller('BeverageCtrl', {$scope: $scope});
 
             if ($scope.userId) {
                 $scope.beverages = StorageService.findAllBeverages();
