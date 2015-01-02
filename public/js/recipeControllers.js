@@ -51,7 +51,7 @@ function addRecipeControllers() {
 
                 var recipe = findRecipeById($scope.recipes, image.recipeID);
                 if (recipe != null) {
-                    recipe.image = image.image;
+                    recipe.imageData = image.imageData;
                     $scope.$applyAsync();
                 }
             };

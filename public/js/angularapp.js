@@ -109,7 +109,7 @@ parentController = ['$scope', '$location', 'fbUrls', 'StorageService',
             var reader = new FileReader();
 
             reader.onloadend = function (e) {
-                entity.image = e.target.result;
+                entity.imageData = e.target.result;
                 $scope.$apply();
             };
 
@@ -118,7 +118,7 @@ parentController = ['$scope', '$location', 'fbUrls', 'StorageService',
 
         $scope.setImageOnRecipe = function (image) {
             if (image) {
-                $scope.recipe.image = image.image;
+                $scope.recipe.imageData = image.imageData;
             }
         };
 
@@ -319,17 +319,17 @@ function supports_html5_storage() {
 var localCache = {
 
     findRecipeImage : function(recipeId) {
-        var image = window.localStorage["kokogvin.recipeImage." + recipeId + ".image"];
-        if (image) {
+        var imageData = window.localStorage["kokogvin.recipeImage." + recipeId + ".imageData"];
+        if (imageData) {
             return {
                 recipeID: recipeId,
-                image: image };
+                imageData: imageData };
         }
         return null;
     },
 
     storeRecipeImage : function(image) {
-        window.localStorage["kokogvin.recipeImage." + image.recipeID + ".image"] = image.image;
+        window.localStorage["kokogvin.recipeImage." + image.recipeID + ".imageData"] = image.imageData;
     }
 };
 

@@ -23,9 +23,9 @@
 
                 <div class="detailImageBox">
                     <a href="">
-                        <span class="detailImageText">{{recipe.image ? 'Endre bilde' : 'Legg til bilde'}}</span>
+                        <span class="detailImageText">{{recipe.imageData ? 'Endre bilde' : 'Legg til bilde'}}</span>
                         <img id="detailImagePreview" class="detailImagePreview"
-                             ng-src="{{recipe.image || placeholderImage}}"
+                             ng-src="{{recipe.imageData || placeholderImage}}"
                              ng-click="chooseImage()" src=""/>
                     </a>
                 </div>

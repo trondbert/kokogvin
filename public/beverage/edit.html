@@ -16,10 +16,10 @@
                     <a href="">
                         <span class="detailImageText">Endre bilde</span>
                         <img id="detailImagePreview" class="detailImagePreview beverage" ng-src="{{beverage.image}}"
-                             ng-click="chooseImage()" ng-show="beverage.image" />
+                             ng-click="chooseImage()" ng-show="beverage.imageData" />
                     </a>
                 </div>
-                <div class="inputField" ng-hide="beverage.image">
+                <div class="inputField" ng-hide="beverage.imageData">
                     <a href="" ng-click="chooseImage()">Legg til bilde</a>
                 </div>
                 <input type="file" id="detailImage" class="hidden" custom-on-change="changeBeverageImage" />

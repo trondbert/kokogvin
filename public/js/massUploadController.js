@@ -10,13 +10,13 @@ function addMassUploadController() {
             var files = $("#filesInput")[0].files;     
 
             newRecipes.forEach( function(recipe) {
-                console.log("Recipe image: " + recipe.image);
-                var file = getByName(files, recipe.image);
+                console.log("Recipe image: " + recipe.imageData);
+                var file = getByName(files, recipe.imageData);
                 console.log(file);
 
                 var reader = new FileReader();
                 reader.onloadend = function (e) {
-                    recipe.image = e.target.result;
+                    recipe.imageData = e.target.result;
                     StorageService.addRecipe(recipe, $scope.recipes);
                 };
                 reader.readAsDataURL(file);

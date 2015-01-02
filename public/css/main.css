@@ -446,8 +446,12 @@ textarea.ingredients {
 
 div.ingredients {
     display: inline-block;
-    width: 49%;
+    width: 48%;
     float: left;
+}
+
+div.ingredients:nth-child(2) {
+    float: right;
 }
 
 textarea.instructions {

@@ -26,6 +26,7 @@ function storageService($firebase, fbUrls) {
         recipe.$loaded().then(function() {
             recipe.ingredients1 = recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[0] || "";
             recipe.ingredients2 = recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[1] || "";
+            debugMsg("Find - ingredients2: " + recipe.ingredients2);
             recipeFoundFn(recipe);
             service.findImage(recipe, imageFoundFn);
         });
@@ -43,7 +44,7 @@ function storageService($firebase, fbUrls) {
         var newRecipeRef = recipesRef.push(newRecipe);
         recipe.$id = newRecipeRef.key();
 
-        if (recipe.image) {
+        if (recipe.imageData) {
             this.updateOrInsertImageForRecipe(recipe, callbackFn);
         } else {
             callbackFn(recipe.$id);
@@ -58,11 +59,12 @@ function storageService($firebase, fbUrls) {
             currentRecipe.tags = recipe.tags;
             currentRecipe.instructions = recipe.instructions;
             currentRecipe.ingredients = recipe.ingredients1 + INGREDIENTS_COLUMN_BREAK + recipe.ingredients2;
+            // debugMsg("Update - ingredients: " + currentRecipe.ingredients);
             currentRecipe.portions = recipe.portions;
-            service.setSpecialTags(currentRecipe);
+            //service.setSpecialTags(currentRecipe);
         }).then(function (snapshot) {
                 if (snapshot) {
-                    if (recipe.image ) {
+                    if (recipe.imageData ) {
                         service.updateOrInsertImageForRecipe(recipe, callbackFn);
                     } else {
                         callbackFn(recipe.$id);
@@ -121,7 +123,7 @@ function storageService($firebase, fbUrls) {
         var beverageRef = $firebase(new Firebase(fbUrls.beverages + "/" + beverage.$id));
         beverageRef.$transaction(function (currentBeverage) {
             currentBeverage.name = beverage.name;
-            currentBeverage.image = beverage.image;
+            currentBeverage.imageData = beverage.imageData;
             currentBeverage.comments = beverage.comments;
             return currentBeverage;
         }).then(function (snapshot) {
@@ -143,7 +145,7 @@ function storageService($firebase, fbUrls) {
     this.findImage = function(recipe, callbackFn) {
         var cachedImage = localCache.findRecipeImage(recipe.$id);
         if (cachedImage) {
-            recipe.image = cachedImage.image;
+            recipe.imageData = cachedImage.imageData;
             callbackFn();
             return;
         }
@@ -161,9 +163,9 @@ function storageService($firebase, fbUrls) {
                 var image = snap.val();
                 if (!image) { return; }
 
-                if (!image.image) { image = utils.firstEntryInMap(image); }
+                if (!image.imageData) { image = utils.firstEntryInMap(image); }
                 localCache.storeRecipeImage(image);
-                recipe.image = image.image;
+                recipe.imageData = image.imageData;
                 callbackFn(image, imagesRef);
             });
     };
@@ -171,13 +173,13 @@ function storageService($firebase, fbUrls) {
     this.updateOrInsertImageForRecipe = function(recipe, callbackFn) {
         this.findFirebaseImage(recipe, function (image, imagesRef) {
             if (image) {
-                image[Object.keys(image)[0]].image = recipe.image;
+                image[Object.keys(image)[0]].imageData = recipe.imageData;
                 imagesRef.update(image);
             } else {
                 image = imagesRef.push();
                 image.set({
                     "recipeID": recipe.$id,
-                    "image": recipe.image
+                    "imageData": recipe.imageData
                 });
             }
             localCache.storeRecipeImage(recipe);
@@ -193,7 +195,7 @@ function storageService($firebase, fbUrls) {
 
         images.$loaded().then( function() {
             images.forEach( function(img) {
-               if (img.image == placeholderImage || img.image == defaultImageDataOld) {
+               if (img.imageData == placeholderImage || img.imageData == defaultImageDataOld) {
                    console.log("Match");
                    var recipeRef = new Firebase(fbUrls.images + "/" + img.$id);
                    recipeRef.remove();
