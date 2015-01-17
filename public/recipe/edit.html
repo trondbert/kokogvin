@@ -2,7 +2,7 @@
 </div>
 
 <article>
-    <form novalidate ng-submit="save()" ng-class="{submitted:editRecipeForm.submitted}" name="editRecipeForm">
+    <form novalidate ng-submit="save()" ng-class="{submitted:editRecipeForm.submitted}" name="editRecipeForm" ng-show="recipe">
 
         <div class="detailTop">
             <div class="detailLeftSide">
@@ -23,9 +23,9 @@
 
                 <div class="detailImageBox">
                     <a href="">
-                        <span class="detailImageText">{{recipe.imageData ? 'Endre bilde' : 'Legg til bilde'}}</span>
+                        <span class="detailImageText">{{image.imageData ? 'Endre bilde' : 'Legg til bilde'}}</span>
                         <img id="detailImagePreview" class="detailImagePreview"
-                             ng-src="{{recipe.imageData || placeholderImage}}"
+                             ng-src="{{image.imageData || placeholderImage}}"
                              ng-click="chooseImage()" src=""/>
                     </a>
                 </div>
@@ -37,10 +37,10 @@
 
                 <div class="inputField">
                     <h3>Ingredienser:</h3>
-                    <textarea id="recipeIngredients1" auto-grow class="ingredients"
-                        ng-model="recipe.ingredients1" ng-required="true" title="Ingredienser"></textarea>
+                    <textarea id="recipeIngredients1" auto-grow class="ingredients" ng-required="true"
+                              ng-model="transients.ingredients1" title="Ingredienser"></textarea>
                     <textarea id="recipeIngredients2" auto-grow class="ingredients"
-                        ng-model="recipe.ingredients2" title="Ingredienser"></textarea>
+                              ng-model="transients.ingredients2" title="Ingredienser"></textarea>
                 </div>
             </div>
 

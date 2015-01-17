@@ -66,7 +66,7 @@ describe('kokogvin', function () {
         });
     });
 
-    describe('view recipes', function() {
+    describe('view recipe', function() {
         beforeEach(function() {
             browser.get('#/recipe/list');
             shared.login();
@@ -76,6 +76,22 @@ describe('kokogvin', function () {
             element(by.linkText('Bacalao')).click();
             browser.debugger();
             expect(element(by.css(".instructions")).getText()).toEqual('Just do it');
+        });
+
+    });
+
+
+    describe('edit recipe', function () {
+        beforeEach(function () {
+            browser.get('#/recipe/list');
+            shared.login();
+        });
+
+        it('updates a recipe', function () {
+            element(by.linkText('Bacalao')).click();
+            element(by.linkText('Rediger oppskrift')).click();
+            element(by.css(".instructions")).sendKeys("Jada, jada");
+            element(by.css('button[type="submit"]')).click();
         });
 
     });

@@ -21,3 +21,5 @@ sudo npm install -g firebase-tools
 firebase init
 firebase deploy
 
+TODO:
+Different pictures when waiting to download a picture and when we know a picture does not exist

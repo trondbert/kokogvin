@@ -50,7 +50,6 @@ function configApp() {
     else {
         app.service('StorageService', storageService);
     }
-    app.service('RecipeFinder', recipeFinder);
 
     app.controller('ParentCtrl', parentController);
     app.controller('ListCtrl', listController);
@@ -279,12 +278,17 @@ findRecipeById = function (recipes, id) {
     return result;
 };
 
+var TRACE = { ordinal: 0, text: "TRACE" };
 var DEBUG = { ordinal: 1, text: "DEBUG" };
 var WARN =  { ordinal: 2, text: "WARN"  };
-var LOG_LEVEL = DEBUG;
+var LOG_LEVEL = TRACE;
 
 (function logLevels() {
-}(DEBUG, WARN));
+}(TRACE, DEBUG, WARN));
+
+traceMsg = function (message) {
+    logMsg(message, TRACE);
+};
 
 debugMsg = function (message) {
     logMsg(message, DEBUG);
@@ -337,4 +341,4 @@ var clearLocalStorage = function() {
     Object.keys(window.localStorage).forEach( function (key) {
         if (/kokogvin/.test(key)) delete window.localStorage[key];
     });
-}
+};

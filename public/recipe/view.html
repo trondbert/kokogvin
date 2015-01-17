@@ -2,7 +2,7 @@
 </div>
 
 <article class="view">
-    <form ng-submit="save()">
+    <form ng-submit="save()" ng-show="recipe">
 
         <div class="detailTop">
             <div class="detailLeftSide">
@@ -10,7 +10,7 @@
 
                 <div class="inputField" ng-show="recipe.portions"><i>{{recipe.portions}} porsjoner</i></div>
 
-                <img id="detailImagePreview" class="detailImagePreview" ng-src="{{recipe.imageData || placeholderImage}}"
+                <img id="detailImagePreview" class="detailImagePreview" ng-src="{{image.imageData || placeholderImage}}"
                      src=""/>
             </div>
 
@@ -19,9 +19,9 @@
                 <H3>Ingredienser:</H3>
 
                 <div class="inputField">
-                    <div class="ingredients" ng-bind-html="ingredients1WithBreaks()"></div>
-                    <div class="ingredients" ng-bind-html="ingredients2WithBreaks()"
-                         ng-show="recipe.ingredients2"></div>
+                    <div class="ingredients" ng-bind-html="withBreaks(transients.ingredients1)"></div>
+                    <div class="ingredients" ng-bind-html="withBreaks(transients.ingredients2)"
+                         ng-show="transients.ingredients2"></div>
                 </div>
 
             </div>
@@ -32,7 +32,7 @@
             <H3>Slik gjør du:</H3>
 
             <div class="inputField">
-                <div class="instructions" ng-bind-html="instructionsWithBreaks()"></div>
+                <div class="instructions" ng-bind-html="withBreaks(recipe.instructions)"></div>
             </div>
         </div>
         <a href="/#/recipe/edit/{{recipe.$id}}">Rediger oppskrift</a>

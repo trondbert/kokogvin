@@ -1,36 +1,58 @@
 
-/** Either returns recipe from rootScope or fetches a new recipe and stores that in the rootScope.
-  * Returns the recipe */
-function recipeFinder($rootScope)
-{
-    this.execute = function($scope, recipeId, StorageService) {
-        if (!$rootScope.recipe || $rootScope.recipe.$id != recipeId) {
-            StorageService.findRecipe(recipeId,
-                function(recipe) {
-                    $scope.recipe = recipe;
-                    $scope.$applyAsync();
-                    $rootScope.recipe = recipe;
-                },
-                function () {
-                    $scope.$applyAsync();
-                }
-            );
-        }
-        else {
-            $scope.recipe = $rootScope.recipe;
-            $scope.$applyAsync();
-        }
-    };
-}
-
 function addRecipeControllers() {
-    app.controller('RecipeCtrl', ['$scope', function($scope) {
+    app.controller('RecipeCtrl', ['$scope', '$rootScope', 'StorageService',
+                          function($scope,   $rootScope,   StorageService) {
+
             $scope.addRecipe = function (recipe) {
                 $scope.recipes.push(recipe);
                 $scope.$applyAsync();
             };
+
+            $scope.findRecipe = function (recipeId) {
+                var recipeFoundCB = function(recipe) {
+                    $scope.recipe = recipe;
+                    $scope.transients = {
+                        ingredients1: recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[0] || "",
+                        ingredients2: recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[1] || ""
+                    };
+                    $scope.$applyAsync();
+                    $rootScope.recipe = recipe;
+                };
+                var imageFoundCB = function(image) {
+                    $scope.image = image || {};
+                    $scope.$applyAsync();
+                    $rootScope.image = $scope.image;
+                };
+
+                if (!$rootScope.recipe || $rootScope.recipe.$id != recipeId) {
+                    debugMsg("Looking up recipe in backend");
+                    StorageService.findRecipe(recipeId,
+                        recipeFoundCB,
+                        imageFoundCB
+                    );
+                }
+                else {
+                    debugMsg("Found recipe in local storage");
+                    $scope.recipe = $rootScope.recipe;
+                    $scope.transients = {
+                        ingredients1: $scope.recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[0] || "",
+                        ingredients2: $scope.recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[1] || ""
+                    };
+                    if ($rootScope.image && $rootScope.image.recipeID == $scope.recipe.$id) {
+                        $scope.image = $rootScope.image;
+                    } else {
+                        StorageService.findImage($scope.recipe, imageFoundCB);
+                    }
+                    $scope.$applyAsync();
+                }
+            };
+
+            $scope.withBreaks = function(input) {
+                return input && input.replace(/\n/g, '<br/>');
+            };
         }
     ]);
+
     app.controller('RecipeListCtrl', ['$scope', '$controller', '$routeParams', 'StorageService',
                               function ($scope, $controller, $routeParams, StorageService) {
             $controller('ListCtrl',   {$scope: $scope});
@@ -57,6 +79,7 @@ function addRecipeControllers() {
             };
 
             $scope.recipes = [];
+
             if ($scope.userId) {
                 if ($routeParams.tags) {
                     var tagList = $routeParams.tags.split("&");
@@ -69,28 +92,33 @@ function addRecipeControllers() {
         }
     ]);
 
-    app.controller('RecipeCreateCtrl', ['$scope', '$controller', '$location', 'StorageService', function ($scope, $controller, $location, StorageService) {
-        $controller('ParentCtrl', {$scope: $scope});
+    app.controller('RecipeCreateCtrl', ['$scope', '$controller', '$location', 'StorageService',
+        function ($scope, $controller, $location, StorageService) {
+            $controller('ParentCtrl', {$scope: $scope});
 
-        $scope.save = function () {
-            $scope.editRecipeForm.submitted = true;
+            $scope.save = function () {
+                $scope.editRecipeForm.submitted = true;
 
-            StorageService.addRecipe($scope.recipe, function (recipeId) {
-                $location.path("/recipe/view/" + recipeId);
-            });
+                $scope.recipe.ingredients = $scope.transients.ingredients1 +
+                                            INGREDIENTS_COLUMN_BREAK +
+                                            $scope.transients.ingredients2;
+                StorageService.addRecipe($scope.recipe, function (recipeId) {
+                    $location.path("/recipe/view/" + recipeId);
+                });
 
-        };
+            };
 
-        $scope.changeRecipeImage = function() { $scope.changeImage($scope.recipe); };
+            $scope.changeRecipeImage = function() { $scope.changeImage($scope.recipe); };
 
-        $scope.recipe = {};
+            $scope.recipe = {};
     }]);
 
     app.controller('RecipeEditCtrl',
-                        ['$scope', '$controller', '$location', '$routeParams', 'StorageService', 'RecipeFinder',
-                function ($scope, $controller, $location, $routeParams, StorageService, RecipeFinder)
+                        ['$scope', '$controller', '$location', '$routeParams', 'StorageService',
+                function ($scope, $controller, $location, $routeParams, StorageService)
         {
             $controller('ParentCtrl', {$scope: $scope});
+            $controller('RecipeCtrl', {$scope: $scope});
             debugMsg("RecipeEditCtrl");
 
             $scope.remove = function ()
@@ -103,47 +131,41 @@ function addRecipeControllers() {
 
             $scope.save = function ()
             {
+                $scope.recipe.ingredients = $scope.transients.ingredients1 +
+                                            INGREDIENTS_COLUMN_BREAK +
+                                            $scope.transients.ingredients2;
+
                 $scope.editRecipeForm.submitted = true;
                 if ($scope.editRecipeForm.$valid) {
-                    StorageService.updateRecipe($scope.recipe, function(recipeId) {
-                        debugMsg("updateRecipe callback");
-                        $location.path('/recipe/view/' + recipeId);
+                    StorageService.updateRecipe($scope.recipe, $scope.image, function (recipeId) {
+                        $scope.$apply(function() {
+                            debugMsg("Setting location to view recipe");
+                            $location.path('/recipe/view/' + recipeId);
+                        });
                     });
-                } else {
+                }
+                else {
                     window.scrollTo(0, 0);
                 }
-                $location.path('/recipe/view/' + $scope.recipe.$id);
             };
 
             $scope.changeRecipeImage = function() {
-                $scope.changeImage($scope.recipe);
+                $scope.changeImage($scope.image);
             };
 
-            RecipeFinder.execute($scope, $routeParams.recipeId, StorageService);
+            $scope.findRecipe($routeParams.recipeId);
         }
     ]);
 
     app.controller('RecipeViewCtrl',
-                        ['$scope', '$controller', '$location', '$routeParams', 'StorageService', 'RecipeFinder',
-                function ($scope, $controller, $location, $routeParams, StorageService, RecipeFinder)
+                        ['$scope', '$controller', '$location', '$routeParams',
+                function ($scope,   $controller,   $location,   $routeParams)
         {
             $controller('ParentCtrl', {$scope: $scope});
+            $controller('RecipeCtrl', {$scope: $scope});
             debugMsg("RecipeViewCtrl");
 
-            $scope.ingredients1WithBreaks = function () {
-                if (!$scope.recipe) return;
-                return $scope.recipe.ingredients1 && $scope.recipe.ingredients1.replace(/\n/g, '<br/>');
-            };
-            $scope.ingredients2WithBreaks = function () {
-                if (!$scope.recipe) return;
-                return $scope.recipe.ingredients2 && $scope.recipe.ingredients2.replace(/\n/g, '<br/>');
-            };
-            $scope.instructionsWithBreaks = function () {
-                if (!$scope.recipe) return;
-                return $scope.recipe.instructions && $scope.recipe.instructions.replace(/\n/g, '<br/>');
-            };
-
-            RecipeFinder.execute($scope, $routeParams.recipeId, StorageService);
+            $scope.findRecipe($routeParams.recipeId);
         }
     ]);
 }

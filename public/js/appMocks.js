@@ -7,14 +7,19 @@ var mockCredentials = {
 function storageServiceMock() {
     this.onAuthCallback = function() {};
 
-    this.findAllRecipes = function () {
+    this.findAllRecipes = function (recipeFoundCB, imageAddedFn) {
+        this.recipes.forEach(function(recipe) {
+            recipeFoundCB(recipe);
+            imageAddedFn();
+        });
         return this.recipes;
     };
 
-    this.findRecipe = function (recipeId) {
+    this.findRecipe = function (recipeId, recipeFoundFn, imageFoundFn) {
         var recipe = this.findRecipeById(recipeId);
-        recipe.ingredients1 = recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[0] || "";
-        recipe.ingredients2 = recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[1] || "";
+
+        recipeFoundFn(recipe);
+        imageFoundFn();
         return recipe;
     };
 
