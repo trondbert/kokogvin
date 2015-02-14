@@ -75,7 +75,6 @@ function storageService($firebase, fbUrls) {
                         callbackFn(recipe.$id);
                         //TODO: delete image
                     }
-                    debugMsg("Finished updateRecipe");
                 }
             }
         );
@@ -161,11 +160,11 @@ function storageService($firebase, fbUrls) {
             .limitToFirst(1)
             .once('value', function (snap) {
                     var image = snap.val();
-                    if (!image) { return; }
-
-                    image = utils.firstEntryInMap(image);
-                    localCache.storeRecipeImage(image);
-                    callbackFn(image, imagesRef);
+                    if (image) {
+                        image = utils.firstEntryInMap(image);
+                        localCache.storeRecipeImage(image);
+                    }
+                    callbackFn(image || {}, imagesRef);
             });
     };
 
@@ -183,7 +182,6 @@ function storageService($firebase, fbUrls) {
                             console.log("Error in updating image: operation was not committed");
                         else if (snapshot) {
                             callbackFn();
-                            debugMsg("Finished updateRecipe");
                         }
                         else
                             console.log("UpdateRecipe: No snapshot?!");

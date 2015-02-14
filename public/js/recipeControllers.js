@@ -9,6 +9,7 @@ function addRecipeControllers() {
             };
 
             $scope.findRecipe = function (recipeId) {
+                $scope.recipe = {}; $scope.image = {};
                 var recipeFoundCB = function(recipe) {
                     $scope.recipe = recipe;
                     $scope.transients = {
@@ -19,7 +20,7 @@ function addRecipeControllers() {
                     $rootScope.recipe = recipe;
                 };
                 var imageFoundCB = function(image) {
-                    $scope.image = image || {};
+                    $scope.image = $scope.image.imageData ? $scope.image : image;
                     $scope.$applyAsync();
                     $rootScope.image = $scope.image;
                 };
@@ -102,7 +103,7 @@ function addRecipeControllers() {
                 $scope.recipe.ingredients = $scope.transients.ingredients1 +
                                             INGREDIENTS_COLUMN_BREAK +
                                             $scope.transients.ingredients2;
-                StorageService.addRecipe($scope.recipe, function (recipeId) {
+                StorageService.addRecipe($scope.recipe, $scope.image, function (recipeId) {
                     $location.path("/recipe/view/" + recipeId);
                 });
 
@@ -125,7 +126,7 @@ function addRecipeControllers() {
             {
                 StorageService.removeRecipe($scope.recipe, function (result) {
                     if (result) { alert("Error: " + result); }
-                    else { $location.path("/recipe/list"); }
+                    else { alert("Removed!"); $location.path("/recipe/list"); }
                 });
             };
 
@@ -137,16 +138,15 @@ function addRecipeControllers() {
 
                 $scope.editRecipeForm.submitted = true;
                 if ($scope.editRecipeForm.$valid) {
-                    StorageService.updateRecipe($scope.recipe, $scope.image, function (recipeId) {
-                        $scope.$apply(function() {
-                            debugMsg("Setting location to view recipe");
-                            $location.path('/recipe/view/' + recipeId);
-                        });
-                    });
+                    StorageService.updateRecipe($scope.recipe, $scope.image, $scope.recipeSaved);
                 }
                 else {
                     window.scrollTo(0, 0);
                 }
+            };
+
+            $scope.recipeSaved = function (recipeId) {
+                $scope.$apply(function() {$location.path('recipe/view/' + recipeId);});
             };
 
             $scope.changeRecipeImage = function() {

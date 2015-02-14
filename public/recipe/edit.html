@@ -2,7 +2,7 @@
 </div>
 
 <article>
-    <form novalidate ng-submit="save()" ng-class="{submitted:editRecipeForm.submitted}" name="editRecipeForm" ng-show="recipe">
+    <form novalidate ng-class="{submitted:editRecipeForm.submitted}" name="editRecipeForm" ng-show="recipe">
 
         <div class="detailTop">
             <div class="detailLeftSide">
@@ -55,7 +55,7 @@
             </div>
 
             <div class="inputField">
-                <button type="submit">{{recipe.$id ? 'Oppdater' : 'Lagre'}}</button>
+                <button ng-click="save()">{{recipe.$id ? 'Oppdater' : 'Lagre'}}</button>
             </div>
 
             <a href="" ng-click="remove()" ng-show="recipe.$id">Slett oppskriften!</a>
