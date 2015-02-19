@@ -10,21 +10,16 @@ function storageService($firebase, fbUrls) {
             var recipe = recipeSnap.val();
             recipe.$id = recipeSnap.key();
             recipeFoundCB(recipe);
-
-            var image = localCache.findRecipeImage(recipeSnap.key());
-            if (image) {
-                imageAddedFn(image);
-            } else {
-                service.findImage( { $id: recipeSnap.key() }, imageAddedFn);
-            }
+            service.findImage(recipe, imageAddedFn);
         });
     };
 
     this.findRecipe = function (recipeId, recipeFoundFn, imageFoundFn) {
         var service = this;
-        var recipe = $firebase(new Firebase(fbUrls.recipes + '/' + recipeId)).$asObject();
-        recipe.$loaded().then(function() {
-            debugMsg("Find - ingredients2: " + recipe.ingredients2);
+        var recipeRef = new Firebase(fbUrls.recipes + '/' + recipeId);
+        recipeRef.on("value", function(snap) {
+            var recipe = snap.val();
+            recipe.$id = snap.key();
             recipeFoundFn(recipe);
             service.findImage(recipe, imageFoundFn);
         });
@@ -42,8 +37,8 @@ function storageService($firebase, fbUrls) {
         var newRecipeRef = recipesRef.push(newRecipe);
         recipe.$id = newRecipeRef.key();
 
-        if (recipe.imageData) {
-            this.updateOrInsertImageForRecipe(recipe, callbackFn);
+        if (image.imageData) {
+            this.updateOrInsertImageForRecipe(recipe, image, callbackFn);
         } else {
             callbackFn(recipe.$id);
         }
@@ -143,28 +138,29 @@ function storageService($firebase, fbUrls) {
     };
 
     this.findImage = function(recipe, callbackFn) {
-        var cachedImage = localCache.findRecipeImage(recipe.$id);
+        var cachedImage = localCache.findImage(recipe.imageId);
         if (cachedImage) {
-            callbackFn(cachedImage);
+            callbackFn(recipe, cachedImage);
             return;
         }
         this.findFirebaseImage(recipe, callbackFn);
     };
 
-    this.findFirebaseImage = function(recipe, callbackFn) {
-        var imagesRef = new Firebase(fbUrls.images);
-            imagesRef
-            .orderByChild("recipeID")
-            .startAt(recipe.$id)
-            .endAt(recipe.$id)
-            .limitToFirst(1)
-            .once('value', function (snap) {
-                    var image = snap.val();
-                    if (image) {
-                        image = utils.firstEntryInMap(image);
-                        localCache.storeRecipeImage(image);
-                    }
-                    callbackFn(image || {}, imagesRef);
+    this.findFirebaseImage = function(imageHolder, callbackFn) {
+        var imageId = imageHolder.imageId;
+        if (!imageId) { callbackFn(imageHolder, null); return; }
+
+        var imageRef = new Firebase(fbUrls.images + "/" + imageId);
+            imageRef.on('value', function (snap) {
+                var image = snap.val();
+                if (image && image.imageData) {
+                    image.$id = imageId;
+                    localCache.storeImage(image);
+                } else {
+                    localCache.removeImage(imageId);
+                }
+
+                callbackFn(imageHolder, image);
             });
     };
 
@@ -191,12 +187,28 @@ function storageService($firebase, fbUrls) {
                 var imagesRef = new Firebase(fbUrls.images);
                 var newImage = imagesRef.push();
                 newImage.set({
-                    "recipeID": recipe.$id,
                     "imageData": image.imageData
                 });
+                image.$id = newImage.key();
             }
-            localCache.storeRecipeImage(image);
-            callbackFn(recipe.$id);
+            new Firebase(fbUrls.recipes + "/" + recipe.$id).transaction(function(currentRecipe) {
+                currentRecipe.imageId = image.$id;
+                return currentRecipe;
+            },
+                function(error, committed, snapshot) {
+                    if (error)
+                        console.log("Error in updating recipe: " + error);
+                    else if (!committed)
+                        console.log("Error in updating recipe: operation was not committed");
+                    else if (snapshot) {
+                        callbackFn();
+                    }
+                    else
+                        console.log("UpdateRecipe: No snapshot?!");
+                }
+            );
+            localCache.storeImage(image);
+            callbackFn();
     };
 
     (function util() {}(this.deleteDefaultImages));
