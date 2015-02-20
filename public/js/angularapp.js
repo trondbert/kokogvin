@@ -39,7 +39,7 @@ function configApp() {
         addRoute($routeProvider, '/massUpload', 'MassUploadCtrl', 'massUpload/view.html');
         addRoute($routeProvider, '/play', 'PlayCtrl', 'play.html');
 
-        addRoute($routeProvider, '/:directives?', null, 'frontpage.html');
+        addRoute($routeProvider, '/:directives?', 'ParentCtrl', 'frontpage.html');
 
         $routeProvider.otherwise({redirectTo: '/'});
 
@@ -53,13 +53,13 @@ function configApp() {
         app.service('StorageService', storageService);
     }
 
-    app.controller('ParentCtrl', parentController);
-    app.controller('ListCtrl', listController);
-    app.controller('LoginCtrl', ['$scope', '$controller', function ($scope, $controller) {
+    app.controller('ParentCtrl', genericControllers.parent);
+    app.controller('ListCtrl', genericControllers.list);
+    /*app.controller('LoginCtrl', ['$scope', '$controller', function ($scope, $controller) {
         $controller('ParentCtrl', {$scope: $scope});
 
         $("*[ng-model='user.email']").focus();
-    }]);
+    }]);*/
     app.controller('PlayCtrl', playController);
 
     addRecipeControllers();
@@ -68,6 +68,7 @@ function configApp() {
 
     app.directive('customOnChange', callFunctionSpecifiedOnElement);
     app.directive('searchFocus', searchFocus);
+    app.directive('loginFocus', loginFocus);
     app.directive('categories', categoriesValidator);
 }
 
@@ -75,93 +76,6 @@ function addRoute(provider, url, controller, templateUrl) {
     provider.when(url, {controller: controller, templateUrl: templateUrl});
 }
 
-parentController = ['$scope', '$location', 'fbUrls', 'StorageService',
-    function ($scope, $location, fbUrls, StorageService) {
-
-        $scope.logout = function () {
-            StorageService.logOut();
-            $location.path("login");
-        };
-        $scope.login = function () {
-            $("#spinner").show();
-
-            StorageService.authWithPassword({
-                    email:      $scope.user.email,
-                    password:   $scope.user.password
-                },
-                function (error) {
-                    debugMsg("callback in login");
-                    $("#spinner").hide();
-                    if (error === null) {
-                        $location.path("recipe/list");
-                        $scope.$apply();
-                    } else {
-                        alert(error);
-                    }
-                }
-            );
-        };
-
-        $scope.chooseImage = function () {
-            $("#detailImage").trigger('click');
-        };
-
-        $scope.changeImage = function (entity) {
-            var file = $("#detailImage")[0].files[0];
-            if (file.size > 50000) {
-                $scope.showNotice("Fila er for stor");
-                return;
-            }
-            var reader = new FileReader();
-
-            reader.onloadend = function (e) {
-                entity.imageData = e.target.result;
-                $scope.$apply();
-            };
-
-            reader.readAsDataURL(file);
-        };
-
-        $scope.setImageOnRecipe = function (image) {
-            if (image) {
-                $scope.recipe.imageData = image.imageData;
-            }
-        };
-
-        $scope.entityAdded = function() {
-            $scope.$applyAsync();
-        };
-
-        $scope.showNotice = function(text) {
-            $(".noticeBox").text(text).show()
-                .fadeOut(3000);
-
-        }
-
-        $scope.placeholderImage = placeholderImage;
-        $scope.waitingImage = waitingImage;
-        window.scope = $scope;
-
-        StorageService.loggedIn() || $location.path("login");
-        StorageService.onAuth(function (authData) {
-            debugMsg("onAuth");
-            if (authData) {
-                $scope.userId = authData.password.email;
-            } else {
-                $scope.userId = null;
-            }
-        });
-    }];
-
-listController = ['$scope', '$controller', function ($scope, $controller) {
-    $controller('ParentCtrl', {$scope: $scope} );
-
-    $scope.showSearchInMenu = true;
-
-    $scope.showSearch = function () {
-        $scope.searchShown = true;
-    }
-}];
 
 var _outstanding_requests = 0;
 
@@ -224,6 +138,19 @@ searchFocus = ['$timeout', function ($timeout) {
             };
             $timeout(focusIfTrue, 0, false);
         });
+    }
+
+    return {
+        link: link
+    };
+}];
+
+loginFocus = ['$timeout', 'StorageService', function ($timeout, StorageService) {
+
+    function link(scope, element) {
+        if (!StorageService.loggedIn()) {
+            element[0].focus();
+        }
     }
 
     return {
@@ -339,7 +266,7 @@ function supports_html5_storage() {
 
 var localCache = {
 
-    findImage : function(imageId) {
+    findImage : function(imageId) { if(1==1) return null; //FIXME
         var imageData = window.localStorage["kokogvin.image." + imageId + ".imageData"];
         if (imageData) {
             return {
@@ -349,7 +276,7 @@ var localCache = {
         return null;
     },
 
-    storeImage : function(image) {
+    storeImage : function(image) { if (1==1) return; //FIXME
         var success = false;
         while (!success) {
             try {

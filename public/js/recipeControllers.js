@@ -4,7 +4,6 @@ function addRecipeControllers() {
                           function($scope,   $rootScope,   StorageService) {
 
             $scope.addRecipe = function (recipe) {
-                debugMsg(recipe.name + " - image: " + recipe.imageId);
                 $scope.recipes.push(recipe);
                 $scope.$applyAsync();
             };
@@ -18,7 +17,6 @@ function addRecipeControllers() {
                         ingredients2: recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[1] || ""
                     };
                     $scope.$applyAsync();
-                    //$rootScope.recipe = recipe;
                 };
                 var imageFoundCB = function(recipe, image) {
                     if (image && image.imageData && !$scope.image.imageData) {
@@ -27,27 +25,25 @@ function addRecipeControllers() {
                         $scope.image = {};
                     }
                     $scope.$applyAsync();
-                    //$rootScope.image = $scope.image;
                 };
-
-                if (!$rootScope.recipe || $rootScope.recipe.$id != recipeId) {
-                    debugMsg("Looking up recipe in backend");
-                    StorageService.findRecipe(recipeId, recipeFoundCB, imageFoundCB);
-                }
-                else {
-                    debugMsg("Found recipe in local storage");
-                    $scope.recipe = $rootScope.recipe;
-                    $scope.transients = {
-                        ingredients1: $scope.recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[0] || "",
-                        ingredients2: $scope.recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[1] || ""
-                    };
-                    if ($rootScope.image && $rootScope.image.recipeID == $scope.recipe.$id) {
-                        $scope.image = $rootScope.image;
-                    } else {
-                        StorageService.findImage($scope.recipe, imageFoundCB);
-                    }
-                    $scope.$applyAsync();
-                }
+                StorageService.findRecipe(recipeId, recipeFoundCB, imageFoundCB);
+                //if (!$rootScope.recipe || $rootScope.recipe.$id != recipeId) {
+                //    debugMsg("Looking up recipe in backend");
+                //    StorageService.findRecipe(recipeId, recipeFoundCB, imageFoundCB);
+                //}
+                //else {
+                //    debugMsg("Found recipe in local storage");
+                //    $scope.transients = {
+                //        ingredients1: $scope.recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[0] || "",
+                //        ingredients2: $scope.recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[1] || ""
+                //    };
+                //    if ($rootScope.image && $rootScope.image.recipeID == $scope.recipe.$id) {
+                //        $scope.image = $rootScope.image;
+                //    } else {
+                //        StorageService.findImage($scope.recipe, imageFoundCB);
+                //    }
+                //    $scope.$applyAsync();
+                //}
             };
 
             $scope.withBreaks = function(input) {

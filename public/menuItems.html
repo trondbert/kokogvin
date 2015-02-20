@@ -30,7 +30,11 @@
       <a href="" ng-click="logout()">Logg ut</a>
     </li>
     <li ng-hide="userId">
-      <a href="/#/login">Logg inn</a>
+        <form>
+            <input type="password" id="password" class="password" placeholder="Passord"
+                   ng-model="user.password" login-focus/>
+            <a href="" ng-click="login()">Logg inn</a>
+        </form>
     </li>
   </ul>
 </div>

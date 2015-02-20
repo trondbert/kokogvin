@@ -5,9 +5,8 @@
     <form ng-submit="save()" ng-show="recipe">
 
         <div class="detailTop">
+            <H2>{{recipe.name}}</H2>
             <div class="detailLeftSide">
-                <H2>{{recipe.name}}</H2>
-
                 <div class="inputField" ng-show="recipe.portions"><i>{{recipe.portions}} porsjoner</i></div>
 
                 <img id="detailImagePreview" class="detailImagePreview" ng-src="{{image.imageData || placeholderImage}}"
