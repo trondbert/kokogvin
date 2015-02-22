@@ -12,6 +12,8 @@ function addRecipeControllers() {
                 $scope.recipe = {}; $scope.image = {};
                 var recipeFoundCB = function(recipe) {
                     $scope.recipe = recipe;
+                    if (!recipe) { $scope.showNotice("Fant ikke oppskriften"); return; }
+
                     $scope.transients = {
                         ingredients1: recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[0] || "",
                         ingredients2: recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[1] || ""
@@ -27,23 +29,13 @@ function addRecipeControllers() {
                     $scope.$applyAsync();
                 };
                 StorageService.findRecipe(recipeId, recipeFoundCB, imageFoundCB);
-                //if (!$rootScope.recipe || $rootScope.recipe.$id != recipeId) {
-                //    debugMsg("Looking up recipe in backend");
-                //    StorageService.findRecipe(recipeId, recipeFoundCB, imageFoundCB);
-                //}
-                //else {
-                //    debugMsg("Found recipe in local storage");
-                //    $scope.transients = {
-                //        ingredients1: $scope.recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[0] || "",
-                //        ingredients2: $scope.recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[1] || ""
-                //    };
-                //    if ($rootScope.image && $rootScope.image.recipeID == $scope.recipe.$id) {
-                //        $scope.image = $rootScope.image;
-                //    } else {
-                //        StorageService.findImage($scope.recipe, imageFoundCB);
-                //    }
-                //    $scope.$applyAsync();
-                //}
+            };
+
+            $scope.changeRecipeImage = function() {
+                $scope.changeImage($scope.image, function(result) {
+                    if (result) $scope.showNotice(result);
+                    else        $scope.imageForm.$setDirty();
+                });
             };
 
             $scope.withBreaks = function(input) {
@@ -89,22 +81,24 @@ function addRecipeControllers() {
     app.controller('RecipeCreateCtrl', ['$scope', '$controller', '$location', 'StorageService',
         function ($scope, $controller, $location, StorageService) {
             $controller('ParentCtrl', {$scope: $scope});
+            $controller('RecipeCtrl', {$scope: $scope});
 
             $scope.save = function () {
                 $scope.editRecipeForm.submitted = true;
 
+                $scope.transients.ingredients1 |= ""; $scope.transients.ingredients2 |= "";
                 $scope.recipe.ingredients = $scope.transients.ingredients1 +
                                             INGREDIENTS_COLUMN_BREAK +
                                             $scope.transients.ingredients2;
-                StorageService.addRecipe($scope.recipe, $scope.image, function (recipeId) {
-                    $location.path("/recipe/view/" + $scope.recipe.$id);
+                StorageService.addRecipe($scope.recipe, $scope.image, function (result) {
+                    if (result) { $scope.showNotice(result) }
+                    else { $location.path("/recipe/view/" + $scope.recipe.$id); }
                 });
             };
 
-            $scope.changeRecipeImage = function() { $scope.changeImage($scope.image); };
-
             $scope.recipe = {}; $scope.image = {};
-    }]);
+        }
+    ]);
 
     app.controller('RecipeEditCtrl',
                         ['$scope', '$controller', '$location', '$routeParams', 'StorageService',
@@ -117,10 +111,11 @@ function addRecipeControllers() {
             $scope.remove = function ()
             {
                 var error = "Sletting av '" + $scope.recipe.name + "' feila.";
-                StorageService.removeRecipe($scope.recipe, function (result) {
+                var callback = function (result) {
                     if (result) { $scope.showNotice(error); }
-                });
-                $location.path("recipe/list");
+                };
+                StorageService.removeRecipe($scope.recipe, callback);
+                $location.path("/recipe/list");
             };
 
             $scope.save = function ()
@@ -131,19 +126,27 @@ function addRecipeControllers() {
 
                 $scope.editRecipeForm.submitted = true;
                 if ($scope.editRecipeForm.$valid) {
+                    if (!$scope.image.imageData) {
+                        $scope.recipe.imageId = null;
+                    }
+                    var imageDirty = $scope.imageForm.$dirty;
                     var error = "Oppdatering av '" + $scope.recipe.name + "' feila.";
                     StorageService.updateRecipe($scope.recipe, $scope.image, function(result) {
-                        if (result) { $scope.showNotice(result + error); }
+                        if (result) {
+                            $scope.showNotice(error);
+                        } else if (imageDirty) {
+                            StorageService.updateImage($scope.image, function(result) {
+                                if (result) {
+                                    $scope.showNotice(error);
+                                }
+                            });
+                        }
                     });
                     $location.path('recipe/view/' + $scope.recipe.$id);
                 }
                 else {
                     window.scrollTo(0, 0);
                 }
-            };
-
-            $scope.changeRecipeImage = function() {
-                $scope.changeImage($scope.image);
             };
 
             $scope.findRecipe($routeParams.recipeId);

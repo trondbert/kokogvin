@@ -31,17 +31,17 @@ var genericControllers = {
                 $("#detailImage").trigger('click');
             };
 
-            $scope.changeImage = function (entity) {
+            $scope.changeImage = function (entity, callback) {
                 var file = $("#detailImage")[0].files[0];
-                if (file.size > 50000) {
-                    $scope.showNotice("Fila er for stor");
+                if (file.size > 61440) {
+                    callback("Bildet kan ikke være større enn 60 KB");
                     return;
                 }
                 var reader = new FileReader();
 
                 reader.onloadend = function (e) {
-                    entity.imageData = e.target.result;
-                    $scope.$apply();
+                    $scope.$apply(function() {entity.imageData = e.target.result;});
+                    callback();
                 };
 
                 reader.readAsDataURL(file);

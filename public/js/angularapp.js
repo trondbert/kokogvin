@@ -148,6 +148,7 @@ searchFocus = ['$timeout', function ($timeout) {
 loginFocus = ['$timeout', 'StorageService', function ($timeout, StorageService) {
 
     function link(scope, element) {
+        if (!scope) throw {error: "scope is not set!"};
         if (!StorageService.loggedIn()) {
             element[0].focus();
         }
@@ -221,11 +222,12 @@ findRecipeById = function (recipes, id) {
 
 var TRACE = { ordinal: 0, text: "TRACE" };
 var DEBUG = { ordinal: 1, text: "DEBUG" };
-var WARN =  { ordinal: 2, text: "WARN"  };
+var WARN  = { ordinal: 2, text: "WARN"  };
+var ERROR = { ordinal: 2, text: "ERROR" };
 var LOG_LEVEL = TRACE;
 
 (function logLevels() {
-}(TRACE, DEBUG, WARN));
+}(TRACE, DEBUG, WARN, ERROR));
 
 traceMsg = function (message) {
     logMsg(message, TRACE);
@@ -235,13 +237,18 @@ debugMsg = function (message) {
     logMsg(message, DEBUG);
 };
 
+errorMsg = function (message) {
+    logMsg(message, ERROR);
+};
+
 logMsg = function (message, logLevel) {
     if (LOG_LEVEL.ordinal <= logLevel.ordinal) {
         console.log(logLevel.text + ": " + message);
     }
 };
 
-var utils = utils || {};
+var utils = {};
+
 utils.firstEntryInMap = function(map) {
     var id = Object.keys(map)[0];
     var object = map[id];
@@ -256,14 +263,6 @@ utils.containsAllTags = function(entity, tags) {
     return result;
 };
 
-function supports_html5_storage() {
-    try {
-        return 'localStorage' in window && window['localStorage'] !== null;
-    } catch (e) {
-        return false;
-    }
-}
-
 var localCache = {
 
     findImage : function(imageId) { if(1==1) return null; //FIXME
@@ -276,22 +275,22 @@ var localCache = {
         return null;
     },
 
-    storeImage : function(image) { if (1==1) return; //FIXME
-        var success = false;
+storeImage : function(image) { if (1==1) return; //FIXME
+    var storageList = window.localStorage["kokogvin.storageList"];
+    var success = false;
         while (!success) {
             try {
                 var key = "kokogvin.image." + image.$id + ".imageData";
                 var value = window.localStorage[key];
                 var newValue = image.imageData;
                 if (!value) {
-                    var storageList = window.localStorage["kokogvin.storageList"];
                     window.localStorage["kokogvin.storageList"] = storageList ? (storageList + "," + key) : key;
                 }
                 window.localStorage[key] = newValue;
                 success = true;
             }
             catch(err) { // TODO: I only assume there's no space left...
-                var storageList = window.localStorage["kokogvin.storageList"];
+                storageList = window.localStorage["kokogvin.storageList"];
                 var firstComma = storageList.indexOf(",");
                 var keyToRemove = firstComma >= 0 ? storageList.substring(0, firstComma) : storageList;
                 if ( !keyToRemove ) {
@@ -306,7 +305,7 @@ var localCache = {
     removeImage : function(imageId) {
         var key = "kokogvin.image." + imageId + ".imageData";
         delete window.localStorage[key];
-        var storageList = window.localStorage["kokogvin.storageList"];
+        var storageList = window.localStorage["kokogvin.storageList"] || "";
         var newStorageList;
         newStorageList = storageList.replace(new RegExp(key), "").replace(new RegExp(",$"), "");
         window.localStorage["kokogvin.storageList"] = newStorageList;
@@ -319,4 +318,4 @@ var localCache = {
     }
 };
 
-utils.clearLocalStorage = function() { localCache.clearAll; }
+utils.clearLocalStorage = localCache.clearAll;
