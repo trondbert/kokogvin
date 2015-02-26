@@ -9,8 +9,8 @@
             <div class="detailLeftSide">
                 <div class="inputField" ng-show="recipe.portions"><i>{{recipe.portions}} porsjoner</i></div>
 
-                <img id="detailImagePreview" class="detailImagePreview" ng-src="{{image.imageData || placeholderImage}}"
-                     src=""/>
+                <img id="detailImagePreview" class="detailImagePreview"
+                     ng-src="{{image.imageData || placeholderImage}}" src=""/>
             </div>
 
             <div class="detailRightSide">
@@ -18,7 +18,8 @@
                 <H3>Ingredienser:</H3>
 
                 <div class="inputField">
-                    <div class="ingredients" ng-bind-html="withBreaks(transients.ingredients1)"></div>
+                    <div class="ingredients" ng-class="{only: !transients.ingredients2}"
+                         ng-bind-html="withBreaks(transients.ingredients1)"></div>
                     <div class="ingredients" ng-bind-html="withBreaks(transients.ingredients2)"
                          ng-show="transients.ingredients2"></div>
                 </div>

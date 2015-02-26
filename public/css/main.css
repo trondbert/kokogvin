@@ -462,6 +462,10 @@ div.ingredients:nth-child(2) {
     float: right;
 }
 
+.ingredients.only {
+    width: 100%;
+}
+
 textarea.instructions {
     height: 15em;
 }
