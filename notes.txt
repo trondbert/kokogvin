@@ -1,2 +1,9 @@
+TODO:
+Different pictures when waiting to download a picture and when we know a picture does not exist
+
+
+Decision log:
+
 20.02.2015: Removing use of localStorage and sharing of images between pages via rootScope,
             because it seems that caching is good enough out of the box, as long as we have some Firebase event handler registered.
+

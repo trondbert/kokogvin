@@ -16,7 +16,6 @@ var genericControllers = {
                         password:   $scope.user.password
                     },
                     function (error) {
-                        debugMsg("callback in login");
                         $("#spinner").hide();
                         if (error) {
                             alert(error);
@@ -68,7 +67,7 @@ var genericControllers = {
             window.scope = $scope;
 
             StorageService.onAuth(function (authData) {
-                debugMsg("onAuth");
+                traceMsg("onAuth");
                 if (authData) {
                     $scope.userId = authData.password.email;
                 } else {

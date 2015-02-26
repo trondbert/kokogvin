@@ -70,6 +70,7 @@ function configApp() {
     app.directive('searchFocus', searchFocus);
     app.directive('loginFocus', loginFocus);
     app.directive('categories', categoriesValidator);
+    app.directive('superBody', superbodyDirective);
 }
 
 function addRoute(provider, url, controller, templateUrl) {
@@ -212,6 +213,16 @@ var categoriesValidator = function () {
     };
 };
 
+var superbodyDirective =  ['$interval', function($interval) {
+    function link(scope, element, attrs) {
+        $(element).keyup(keyup);
+    }
+    return {
+        link: link
+    };
+}]
+
+
 findRecipeById = function (recipes, id) {
     var result = null;
     recipes.forEach(function (it) {
@@ -224,7 +235,7 @@ var TRACE = { ordinal: 0, text: "TRACE" };
 var DEBUG = { ordinal: 1, text: "DEBUG" };
 var WARN  = { ordinal: 2, text: "WARN"  };
 var ERROR = { ordinal: 2, text: "ERROR" };
-var LOG_LEVEL = TRACE;
+var LOG_LEVEL = WARN;
 
 (function logLevels() {
 }(TRACE, DEBUG, WARN, ERROR));
@@ -263,59 +274,78 @@ utils.containsAllTags = function(entity, tags) {
     return result;
 };
 
-var localCache = {
+var localCache = { };
 
-    findImage : function(imageId) { if(1==1) return null; //FIXME
-        var imageData = window.localStorage["kokogvin.image." + imageId + ".imageData"];
-        if (imageData) {
-            return {
-                $id: imageId,
-                imageData: imageData };
-        }
-        return null;
-    },
+localCache.enabled = false;
 
-storeImage : function(image) { if (1==1) return; //FIXME
+localCache.findImage = function(imageId) { if(!this.enabled) return null;
+    var imageData = window.localStorage["kokogvin.image." + imageId + ".imageData"];
+    if (imageData) {
+        return {
+            $id: imageId,
+            imageData: imageData };
+    }
+    return null;
+};
+
+localCache.storeImage = function(image) {
+    if (!this.enabled) return;
     var storageList = window.localStorage["kokogvin.storageList"];
     var success = false;
-        while (!success) {
-            try {
-                var key = "kokogvin.image." + image.$id + ".imageData";
-                var value = window.localStorage[key];
-                var newValue = image.imageData;
-                if (!value) {
-                    window.localStorage["kokogvin.storageList"] = storageList ? (storageList + "," + key) : key;
-                }
-                window.localStorage[key] = newValue;
-                success = true;
+    while (!success) {
+        try {
+            var key = "kokogvin.image." + image.$id + ".imageData";
+            var value = window.localStorage[key];
+            var newValue = image.imageData;
+            if (!value) {
+                window.localStorage["kokogvin.storageList"] = storageList ? (storageList + "," + key) : key;
             }
-            catch(err) { // TODO: I only assume there's no space left...
-                storageList = window.localStorage["kokogvin.storageList"];
-                var firstComma = storageList.indexOf(",");
-                var keyToRemove = firstComma >= 0 ? storageList.substring(0, firstComma) : storageList;
-                if ( !keyToRemove ) {
-                    break;
-                }
-                delete window.localStorage[keyToRemove];
-                window.localStorage["kokogvin.storageList"] = storageList.substring(firstComma + 1);
-            }
+            window.localStorage[key] = newValue;
+            success = true;
         }
-    },
-
-    removeImage : function(imageId) {
-        var key = "kokogvin.image." + imageId + ".imageData";
-        delete window.localStorage[key];
-        var storageList = window.localStorage["kokogvin.storageList"] || "";
-        var newStorageList;
-        newStorageList = storageList.replace(new RegExp(key), "").replace(new RegExp(",$"), "");
-        window.localStorage["kokogvin.storageList"] = newStorageList;
-    },
-
-    clearAll : function() {
-        Object.keys(window.localStorage).forEach( function (key) {
-            if (/kokogvin/.test(key)) delete window.localStorage[key];
-        });
+        catch (err) { // TODO: I only assume there's no space left...
+            storageList = window.localStorage["kokogvin.storageList"];
+            var firstComma = storageList.indexOf(",");
+            var keyToRemove = firstComma >= 0 ? storageList.substring(0, firstComma) : storageList;
+            if (!keyToRemove) {
+                break;
+            }
+            delete window.localStorage[keyToRemove];
+            window.localStorage["kokogvin.storageList"] = storageList.substring(firstComma + 1);
+        }
     }
 };
 
+localCache.removeImage = function(imageId) {
+    if (!this.enabled) return;
+    var key = "kokogvin.image." + imageId + ".imageData";
+    delete window.localStorage[key];
+    var storageList = window.localStorage["kokogvin.storageList"] || "";
+    var newStorageList;
+    newStorageList = storageList.replace(new RegExp(key), "").replace(new RegExp(",$"), "");
+    window.localStorage["kokogvin.storageList"] = newStorageList;
+};
+
+localCache.clearAll = function() {
+    if (!this.enabled) return;
+    Object.keys(window.localStorage).forEach( function (key) {
+        if (/kokogvin/.test(key)) delete window.localStorage[key];
+    });
+};
+
 utils.clearLocalStorage = localCache.clearAll;
+
+function keyup(e) {
+    e = e || event;
+    var evt = e.type;
+    while (evt.length < 10) evt += ' ';
+
+    var char = String.fromCharCode(e.keyCode || e.charCode);
+    if (e.ctrlKey && e.shiftKey && char == "S") {
+        window.scope.$apply( function() {
+            window.scope.searchShown = true ^ window.scope.searchShown;
+        });
+    }
+}
+
+

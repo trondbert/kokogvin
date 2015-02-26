@@ -31,13 +31,9 @@ function storageService($firebase, fbUrls) {
 
         var saveNewRecipe = function (imageId) {
             if (image.imageData && !imageId) { errorMsg("Feila i lagring av bilde."); }
-            service.setSpecialTags(recipe);
             var recipesRef = new Firebase(fbUrls.recipes);
-            var newRecipe = {  name: recipe.name, imageId: imageId,
-                tags: recipe.tags, tag_middag: recipe.tag_middag, tag_fisk: recipe.tag_fisk, tag_kjoett: recipe.tag_kjoett,
-                instructions: recipe.instructions, ingredients: recipe.ingredients,
-                portions: recipe.portions || ""
-            };
+            var newRecipe = service.private.dataMap(recipe);
+            newRecipe.imageId = imageId;
 
             var newRecipeRef = recipesRef.push(newRecipe, function(result) {
                 if (result) {callbackFn(result);}
@@ -56,14 +52,9 @@ function storageService($firebase, fbUrls) {
     this.updateRecipe = function (recipe, image, callbackFn) {
         var callbackUpdateRecipe = function(imageId) {
             var recipeRef = new Firebase(fbUrls.recipes + "/" + recipe.$id);
-            recipeRef.update({ name: recipe.name, imageId: imageId, portions: recipe.portions,
-                    instructions: recipe.instructions, ingredients: recipe.ingredients,
-                    tags: recipe.tags, tag_middag: recipe.tag_middag, tag_fisk: recipe.tag_fisk, tag_kjoett: recipe.tag_kjoett
-                },
-                function(result) {
-                    callbackFn(result);
-                }
-            );
+            var dataMap = service.private.dataMap(recipe);
+            dataMap.imageId = imageId;
+            recipeRef.update(dataMap, function(result) { callbackFn(result); } );
         };
 
         var service = this;
@@ -94,6 +85,7 @@ function storageService($firebase, fbUrls) {
             imgRef.remove();
         }
         var recipeRef = new Firebase(fbUrls.recipes + "/" + recipe.$id);
+        recipeRef.off();
         recipeRef.remove(recipeDeletedFn);
     };
 
@@ -101,7 +93,6 @@ function storageService($firebase, fbUrls) {
         var service = this;
         var firstTag = tags[0];
         var recipesRef = new Firebase(fbUrls.recipes);
-        debugMsg("tag_"  + firstTag);
         recipesRef
             .orderByChild("tag_"  + firstTag)
             .startAt(true)
@@ -118,6 +109,35 @@ function storageService($firebase, fbUrls) {
                     service.findImage(recipe, imageFoundCB);
                 });
             });
+    };
+
+    this.private = {};
+    this.private.dataMap = function(recipe) {
+        var specialTags = this.specialTags(recipe);
+        var theMap =
+        {   name: recipe.name,
+            imageId: recipe.imageId,
+            portions: recipe.portions || "",
+            instructions: recipe.instructions,
+            ingredients: recipe.ingredients,
+            tags: recipe.tags,
+            tag_middag: specialTags.tag_middag,
+            tag_fisk: specialTags.tag_fisk,
+            tag_kjoett: specialTags.tag_kjoett,
+            tag_vegetar: specialTags.tag_vegetar,
+            tag_smarett: specialTags.tag_smarett
+        };
+        return theMap;
+    };
+    this.private.specialTags = function(recipe) {
+        var tags = {
+            tag_middag : !!/middag/.test(recipe.tags),
+            tag_fisk   : !!/fisk/.test(recipe.tags),
+            tag_kjoett : !!/kjøtt/.test(recipe.tags),
+            tag_vegetar : !!/vegetar/.test(recipe.tags),
+            tag_smarett : !!/smårett/.test(recipe.tags)
+        };
+        return tags;
     };
 
     this.findAllBeverages = function () {
@@ -146,12 +166,6 @@ function storageService($firebase, fbUrls) {
             , function (err) {
                 console.log(err);
             });
-    };
-
-    this.setSpecialTags = function(recipe) {
-        recipe.tag_middag = !!/middag/.test(recipe.tags);
-        recipe.tag_fisk = !!/fisk/.test(recipe.tags);
-        recipe.tag_kjoett = !!/kjøtt/.test(recipe.tags);
     };
 
     this.findImage = function(recipe, callbackFn) {
