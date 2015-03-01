@@ -3,7 +3,7 @@ var shared = require('./shared/shared.js');
 
 describe('kokogvin', function () {
 
-    browser.get('index.html');
+    browser.get('/');
 
     it('should show heading', function () {
         expect(element.all(by.css('header a')).first().getText()).
@@ -14,8 +14,8 @@ describe('kokogvin', function () {
 
         browser.get('#/recipe/list');
 
-        it('shows login box', function () {
-            expect(element.all(by.css('.loginBox'))).not.toBe(null);
+        it('shows login field', function () {
+            expect(element(by.model('user.password'))).not.toBe(null);
         });
     });
 
@@ -77,7 +77,6 @@ describe('kokogvin', function () {
             browser.debugger();
             expect(element(by.css(".instructions")).getText()).toEqual('Just do it');
         });
-
     });
 
 
@@ -91,7 +90,9 @@ describe('kokogvin', function () {
             element(by.linkText('Bacalao')).click();
             element(by.linkText('Rediger oppskrift')).click();
             element(by.css(".instructions")).sendKeys("Jada, jada");
-            element(by.css('button[type="submit"]')).click();
+            expect(element(by.css(".instructions")).getText()).toEqual("Jada, jada");
+            element(by.buttonText('Oppdater')).click();
+            expect(element(by.css(".instructions")).getText()).toEqual("Jada, jada");
         });
 
     });

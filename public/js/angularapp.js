@@ -67,8 +67,8 @@ function configApp() {
     addMassUploadController();
 
     app.directive('customOnChange', callFunctionSpecifiedOnElement);
-    app.directive('searchFocus', searchFocus);
-    app.directive('loginFocus', loginFocus);
+    //app.directive('searchFocus', searchFocus);
+    //app.directive('loginFocus', loginFocus);
     app.directive('categories', categoriesValidator);
     app.directive('superBody', superbodyDirective);
 }
@@ -235,7 +235,7 @@ var TRACE = { ordinal: 0, text: "TRACE" };
 var DEBUG = { ordinal: 1, text: "DEBUG" };
 var WARN  = { ordinal: 2, text: "WARN"  };
 var ERROR = { ordinal: 2, text: "ERROR" };
-var LOG_LEVEL = WARN;
+var LOG_LEVEL = TRACE;
 
 (function logLevels() {
 }(TRACE, DEBUG, WARN, ERROR));
@@ -276,9 +276,13 @@ utils.containsAllTags = function(entity, tags) {
 
 var localCache = { };
 
-localCache.enabled = false;
+localCache.enabled = true;
 
-localCache.findImage = function(imageId) { if(!this.enabled) return null;
+localCache.findCachedImage = function(imageId, imageTimestamp) { if(!this.enabled) return null;
+    var cachedTimestamp = window.localStorage["kokogvin.image." + imageId + ".timestamp"];
+    if (imageTimestamp && imageTimestamp < cachedTimestamp) {
+        return null;
+    }
     var imageData = window.localStorage["kokogvin.image." + imageId + ".imageData"];
     if (imageData) {
         return {
@@ -288,19 +292,24 @@ localCache.findImage = function(imageId) { if(!this.enabled) return null;
     return null;
 };
 
-localCache.storeImage = function(image) {
+localCache.storeCachedImage = function(image) {
     if (!this.enabled) return;
     var storageList = window.localStorage["kokogvin.storageList"];
     var success = false;
+    var imageKey = "image."+image.$id;
+    var imageDataKey = "kokogvin."+imageKey+".imageData";
+    var imageTimestampKey = "kokogvin."+imageKey+".timestamp";
+
     while (!success) {
         try {
-            var key = "kokogvin.image." + image.$id + ".imageData";
-            var value = window.localStorage[key];
+            var value = window.localStorage[imageDataKey];
             var newValue = image.imageData;
             if (!value) {
-                window.localStorage["kokogvin.storageList"] = storageList ? (storageList + "," + key) : key;
+                window.localStorage["kokogvin.storageList"] =
+                    storageList ? (storageList + "," + imageKey) : imageKey;
             }
-            window.localStorage[key] = newValue;
+            window.localStorage[imageDataKey] = newValue;
+            window.localStorage[imageTimestampKey] = Date.now();
             success = true;
         }
         catch (err) { // TODO: I only assume there's no space left...
@@ -310,13 +319,17 @@ localCache.storeImage = function(image) {
             if (!keyToRemove) {
                 break;
             }
-            delete window.localStorage[keyToRemove];
+            delete window.localStorage["kokogvin."+keyToRemove+".imageData"];
+            delete window.localStorage["kokogvin."+keyToRemove+".timestamp"];
             window.localStorage["kokogvin.storageList"] = storageList.substring(firstComma + 1);
         }
     }
+    traceMsg(window.localStorage[imageDataKey]);
+    traceMsg(window.localStorage[imageTimestampKey]);
+
 };
 
-localCache.removeImage = function(imageId) {
+localCache.removeCachedImage = function(imageId) {
     if (!this.enabled) return;
     var key = "kokogvin.image." + imageId + ".imageData";
     delete window.localStorage[key];

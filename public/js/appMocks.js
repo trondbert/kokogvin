@@ -9,8 +9,9 @@ function storageServiceMock() {
 
     this.findAllRecipes = function (recipeFoundCB, imageAddedFn) {
         this.recipes.forEach(function(recipe) {
+            var image = {$id: recipe.imageId, imageData: recipe.imageData };
             recipeFoundCB(recipe);
-            imageAddedFn();
+            imageAddedFn(recipe, image);
         });
         return this.recipes;
     };
@@ -104,14 +105,17 @@ function storageServiceMock() {
     this.recipes[0] = { $id: '1', name: 'Lasagne', tags: 'pasta',
         ingredients : 'En teskje kardemomme\nEn liter gløgg\n' + INGREDIENTS_COLUMN_BREAK + 'Litt til\nPynt med persille',
         instructions : 'Comme il faut',
+        imageId : 'ri0',
         imageData: recipeImageDataMock[0]};
     this.recipes[1] = { $id: '2', name: 'Bacalao', tags: 'fisk tomat',
         ingredients : 'En teskje saft\nEn liter slaggg\n' + INGREDIENTS_COLUMN_BREAK + 'Pynt med hakkede nøtter',
         instructions : 'Just do it',
+        imageId : 'ri1',
         imageData: recipeImageDataMock[1]};
     this.recipes[2] = { $id: '3', name: 'Taco', tags: 'meksikansk',
         ingredients : 'To slurker kaffe\nEn hekto gruff\n' + INGREDIENTS_COLUMN_BREAK + 'Passe dose happiness\nJobbe før å få mæ blid',
         instructions : 'Je ne sais pas',
+        imageId : 'ri2',
         imageData: recipeImageDataMock[2]};
 
     this.beverages = [];
@@ -124,28 +128,20 @@ function storageServiceMock() {
 playController = ['$scope', '$location', 'fbUrls',
     function ($scope, $location, fbUrls) {
 
-    $scope.updateRecipe = function(recipeId, imageId) {
-        var recipeRef = new Firebase(fbUrls.recipes + "/" + recipeId);
-        recipeRef.on("value", function(snap) {
-            if (snap.val()) {
-                recipeRef.update( { imageId: imageId} )
+    $scope.continueLoop = true;
+
+    $scope.updateRecipes = function() {
+        var recipeRef = new Firebase(fbUrls.recipes);
+        recipeRef.on("child_added", function(snap) {
+            if ($scope.continueLoop) {
+                console.log(snap.key());
+                console.log(snap.val().name);
+                snap.ref().update({ imageTimestamp: Date.now() });
+                $scope.continueLoop = false;
             }
         });
     };
-
-    var imgs = ["-JcVDUF3ji0QyPUeXfz4",
-            "-JcVI2TRq0kcYEndVA2h",
-            "000000024"];
-
-    for (var i = 0; i < imgs.length; i++) {
-        var imgRef = new Firebase(fbUrls.images + "/" + imgs[i]);
-        imgRef.remove();
-    }
-
-
-
-    //var imagesRef = new Firebase('https://blinding-fire-2931.firebaseio.com/test');
-
+    $scope.updateRecipes();
 }
 ];
 

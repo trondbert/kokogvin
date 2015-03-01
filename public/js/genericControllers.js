@@ -3,6 +3,7 @@ var genericControllers = {
 
     parent : ['$scope', '$location', '$route', 'fbUrls', 'StorageService',
         function ($scope, $location, $route, fbUrls, StorageService) {
+            traceMsg("Parent Controller...");
 
             $scope.logout = function () {
                 StorageService.logOut();
@@ -11,6 +12,7 @@ var genericControllers = {
             $scope.login = function () {
                 $("#spinner").show();
 
+                traceMsg("Authenticating");
                 StorageService.authWithPassword({
                         email:      "trondvalen@gmail.com",
                         password:   $scope.user.password
@@ -20,6 +22,7 @@ var genericControllers = {
                         if (error) {
                             alert(error);
                         } else {
+                            traceMsg("Route reload")
                             $route.reload();
                         }
                     }

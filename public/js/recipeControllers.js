@@ -1,34 +1,30 @@
 
 function addRecipeControllers() {
-    app.controller('RecipeCtrl', ['$scope', '$rootScope', 'StorageService',
-                          function($scope,   $rootScope,   StorageService) {
+    app.controller('RecipeCtrl', ['$scope',
+                          function($scope) {
 
             $scope.addRecipe = function (recipe) {
                 $scope.recipes.push(recipe);
                 $scope.$applyAsync();
             };
 
-            $scope.findRecipe = function (recipeId) {
-                $scope.recipe = {}; $scope.image = {};
-                var recipeFoundCB = function(recipe) {
-                    $scope.recipe = recipe;
-                    if (!recipe) { $scope.showNotice("Fant ikke oppskriften"); return; }
+            $scope.recipeFoundCB = function(recipe) {
+                $scope.recipe = recipe;
+                if (!recipe) { $scope.showNotice("Fant ikke oppskriften"); return; }
 
-                    $scope.transients = {
-                        ingredients1: recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[0] || "",
-                        ingredients2: recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[1] || ""
-                    };
-                    $scope.$applyAsync();
+                $scope.transients = {
+                    ingredients1: recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[0] || "",
+                    ingredients2: recipe.ingredients.split(INGREDIENTS_COLUMN_BREAK)[1] || ""
                 };
-                var imageFoundCB = function(recipe, image) {
-                    if (image && image.imageData && !$scope.image.imageData) {
-                        $scope.image = image;
-                    } else if (!$scope.image.imageData) {
-                        $scope.image = {};
-                    }
-                    $scope.$applyAsync();
-                };
-                StorageService.findRecipe(recipeId, recipeFoundCB, imageFoundCB);
+                $scope.$applyAsync();
+            };
+            $scope.imageFoundCB = function(recipe, image) {
+                if (image && image.imageData && !$scope.image.imageData) {
+                    $scope.image = image;
+                } else if (!$scope.image.imageData) {
+                    $scope.image = {};
+                }
+                $scope.$applyAsync();
             };
 
             $scope.changeRecipeImage = function() {
@@ -78,8 +74,9 @@ function addRecipeControllers() {
         }
     ]);
 
-    app.controller('RecipeCreateCtrl', ['$scope', '$controller', '$location', 'StorageService',
-        function ($scope, $controller, $location, StorageService) {
+    app.controller('RecipeCreateCtrl',
+                        ['$scope', '$controller', '$location', 'StorageService',
+                function ($scope,   $controller,   $location,   StorageService) {
             $controller('ParentCtrl', {$scope: $scope});
             $controller('RecipeCtrl', {$scope: $scope});
 
@@ -138,6 +135,9 @@ function addRecipeControllers() {
                     }
                     var imageDirty = $scope.imageForm.$dirty;
                     var error = "Oppdatering av '" + $scope.recipe.name + "' feila.";
+                    if ($scope.image) {
+                        $scope.recipe.imageTimestamp = Date.now();
+                    }
                     StorageService.updateRecipe($scope.recipe, $scope.image, function(result) {
                         if (result) {
                             $scope.showNotice(error);
@@ -161,18 +161,20 @@ function addRecipeControllers() {
                 }
             };
 
-            $scope.findRecipe($routeParams.recipeId);
+            $scope.recipe = {}; $scope.image = {};
+            StorageService.findRecipe($routeParams.recipeId, $scope.recipeFoundCB, $scope.imageFoundCB);
         }
     ]);
 
     app.controller('RecipeViewCtrl',
-                        ['$scope', '$controller', '$location', '$routeParams',
-                function ($scope,   $controller,   $location,   $routeParams)
+                        ['$scope', '$controller', '$routeParams', 'StorageService',
+                function ($scope,   $controller,   $routeParams,   StorageService)
         {
             $controller('ParentCtrl', {$scope: $scope});
             $controller('RecipeCtrl', {$scope: $scope});
 
-            $scope.findRecipe($routeParams.recipeId);
+            $scope.recipe = {}; $scope.image = {};
+            StorageService.findRecipe($routeParams.recipeId, $scope.recipeFoundCB, $scope.imageFoundCB);
         }
     ]);
 }

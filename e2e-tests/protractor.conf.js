@@ -2,11 +2,11 @@ exports.config = {
   allScriptsTimeout: 11000,
 
   specs: [
-    'scenarios*.js'
+    'scenarios.js'
   ],
 
   capabilities: {
-    'browserName': 'firefox'
+    'browserName': 'chrome'
   },
 
   baseUrl: 'http://localhost:1337/',
@@ -14,6 +14,6 @@ exports.config = {
   framework: 'jasmine',
 
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 30000
+    defaultTimeoutInterval: 3000
   }
 };

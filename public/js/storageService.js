@@ -72,7 +72,7 @@ function storageService($firebase, fbUrls) {
     this.updateImage = function(image, callbackFn) {
         this.updateOrInsertImage(image, function(imageId) {
             if (!imageId) {
-                callbackFn("Lagring av bilde feila.");
+                callbackFn("Lagring av bilde feilet.");
             } else {
                 callbackFn();
             }
@@ -87,6 +87,7 @@ function storageService($firebase, fbUrls) {
         var recipeRef = new Firebase(fbUrls.recipes + "/" + recipe.$id);
         recipeRef.off();
         recipeRef.remove(recipeDeletedFn);
+        localCache.removeCachedImage(recipe.imageId);
     };
 
     this.findRecipesByTags = function(tags, recipeFoundCB, imageFoundCB) {
@@ -115,17 +116,18 @@ function storageService($firebase, fbUrls) {
     this.private.dataMap = function(recipe) {
         var specialTags = this.specialTags(recipe);
         var theMap =
-        {   name: recipe.name,
-            imageId: recipe.imageId,
+        {   name: recipe.name || "",
+            imageId: recipe.imageId || null,
+            imageTimestamp: recipe.imageTimestamp || 0,
             portions: recipe.portions || "",
-            instructions: recipe.instructions,
-            ingredients: recipe.ingredients,
-            tags: recipe.tags,
-            tag_middag: specialTags.tag_middag,
-            tag_fisk: specialTags.tag_fisk,
-            tag_kjoett: specialTags.tag_kjoett,
-            tag_vegetar: specialTags.tag_vegetar,
-            tag_smarett: specialTags.tag_smarett
+            instructions: recipe.instructions || "",
+            ingredients: recipe.ingredients || "",
+            tags: recipe.tags || "",
+            tag_middag: specialTags.tag_middag || false,
+            tag_fisk: specialTags.tag_fisk || false,
+            tag_kjoett: specialTags.tag_kjoett || false,
+            tag_vegetar: specialTags.tag_vegetar || false,
+            tag_smarett: specialTags.tag_smarett || false
         };
         return theMap;
     };
@@ -169,7 +171,7 @@ function storageService($firebase, fbUrls) {
     };
 
     this.findImage = function(recipe, callbackFn) {
-        var cachedImage = localCache.findImage(recipe.imageId);
+        var cachedImage = localCache.findCachedImage(recipe.imageId, recipe.imageTimestamp);
         if (cachedImage) {
             callbackFn(recipe, cachedImage);
             return;
@@ -186,9 +188,9 @@ function storageService($firebase, fbUrls) {
                 var image = snap.val();
                 if (image && image.imageData) {
                     image.$id = imageId;
-                    localCache.storeImage(image);
+                    localCache.storeCachedImage(image);
                 } else {
-                    localCache.removeImage(imageId);
+                    localCache.removeCachedImage(imageId);
                 }
 
                 callbackFn(imageHolder, image);
@@ -214,7 +216,7 @@ function storageService($firebase, fbUrls) {
                 }
                 else {
                     callbackFn(image.$id);
-                    localCache.storeImage(image);
+                    localCache.storeCachedImage(image);
                 }
             }
         );
