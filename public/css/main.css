@@ -121,7 +121,7 @@ select[multiple] {
     vertical-align: top;
 }
 
-textarea {
+.editEntityForm textarea {
     width: 250px;
     height: 150px;
     overflow: auto; /* IE always renders vertical scrollbar without this */
@@ -303,7 +303,12 @@ header a:visited {
 .nav > ul > li {
   display: inline-block;
   position: relative;
-  padding: 0 1em 0.5em 1em;
+  padding: 0.3em 1em 0.5em 1em;
+}
+
+.nav > ul > li.activeTab {
+    border-radius: 1em 1em 0 0;
+    background-color: white;
 }
 
 .nav > ul > li > ul {
@@ -497,4 +502,12 @@ textarea.comments {
     font-size: 1.6em;
     padding: 0.2em;
     display: none;
+}
+
+.wimpLeft {
+    float: left;
+}
+
+.wimpLeft {
+    float: right;
 }

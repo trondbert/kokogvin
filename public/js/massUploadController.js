@@ -1,11 +1,11 @@
 
 function addMassUploadController() {
 
-    app.controller('MassUploadCtrl', function ($scope, $controller, $location, StorageService) {
+    app.controller('MassUploadCtrl', function ($scope, $controller, $location, LoginService) {
         $controller('ParentCtrl', {$scope: $scope});
 
         $scope.upload = function () {
-            $scope.recipes = StorageService.findAllRecipes();
+            $scope.recipes = LoginService.findAllRecipes();
 
             var files = $("#filesInput")[0].files;     
 
@@ -17,7 +17,7 @@ function addMassUploadController() {
                 var reader = new FileReader();
                 reader.onloadend = function (e) {
                     recipe.imageData = e.target.result;
-                    StorageService.addRecipe(recipe, $scope.recipes);
+                    LoginService.addRecipe(recipe, $scope.recipes);
                 };
                 reader.readAsDataURL(file);
             });

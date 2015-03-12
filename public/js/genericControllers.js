@@ -1,19 +1,19 @@
 
 var genericControllers = {
 
-    parent : ['$scope', '$location', '$route', 'fbUrls', 'StorageService',
-        function ($scope, $location, $route, fbUrls, StorageService) {
+    parent : ['$scope', '$location', '$route', 'fbUrls', 'LoginService',
+        function ($scope, $location, $route, fbUrls, LoginService) {
             traceMsg("Parent Controller...");
 
             $scope.logout = function () {
-                StorageService.logOut();
+                LoginService.logOut();
                 $location.path("/");
             };
             $scope.login = function () {
                 $("#spinner").show();
 
                 traceMsg("Authenticating");
-                StorageService.authWithPassword({
+                LoginService.authWithPassword({
                         email:      "trondvalen@gmail.com",
                         password:   $scope.user.password
                     },
@@ -64,12 +64,20 @@ var genericControllers = {
                     .fadeOut(4000);
             };
 
+            $scope.isPageOfType = function(what) {
+                return new RegExp(what).test(window.location);
+            };
+
+            $scope.withBreaks = function(input) {
+                return input && input.replace(/\n/g, '<br/>');
+            };
+
             $scope.placeholderImage = placeholderImage;
             $scope.waitingImage = waitingImage;
             $scope.user = $scope.user || {};
             window.scope = $scope;
 
-            StorageService.onAuth(function (authData) {
+            LoginService.onAuth(function (authData) {
                 traceMsg("onAuth");
                 if (authData) {
                     $scope.userId = authData.password.email;

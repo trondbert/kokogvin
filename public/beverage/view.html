@@ -8,15 +8,15 @@
             <div class="detailLeftSide">
                 <H2>{{beverage.name}}</H2>
 
-                <img id="detailImagePreview" class="detailImagePreview" ng-src="{{beverage.imageData}}"
-                     ng-show="beverage.imageData"/>
+                <img id="detailImagePreview" class="detailImagePreview" ng-src="{{image.imageData}}"
+                     ng-show="image.imageData"/>
             </div>
 
             <div class="detailRightSide">
 
                 <H3>Kommentarer:</H3>
                 <div class="inputField">
-                    <div class="comments" ng-bind-html="commentsWithBreaks()"></div>
+                    <div class="comments" ng-bind-html="withBreaks(comments)"></div>
                 </div>
             </div>
         </div>

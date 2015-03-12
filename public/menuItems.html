@@ -1,6 +1,6 @@
 <div class="nav">
   <ul>
-    <li>
+    <li ng-class="{activeTab:isPageOfType('recipe')}">
       <a href="/#/recipe/list">Oppskrifter</a>
       <ul>
         <li>
@@ -15,7 +15,7 @@
         <li><a href="/#/recipe/new">Ny oppskrift</a></li>
       </ul>
     </li>
-    <li>
+    <li ng-class="{activeTab:isPageOfType('beverage')}">
       <a href="/#/beverage/list">Vin</a>
       <ul>
         <li><a href="/#/beverage/new">Ny vin</a></li>

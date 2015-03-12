@@ -2,7 +2,7 @@
 </div>
 
 <article>
-    <form novalidate ng-submit="save()" ng-class="{submitted:editBeverageForm.submitted}" name="editBeverageForm">
+    <form novalidate class="editEntityForm" ng-submit="save()" ng-class="{submitted:editBeverageForm.submitted}" name="editBeverageForm">
 
         <div class="detailTop">
             <div class="detailLeftSide">
@@ -15,11 +15,11 @@
                 <div class="detailImageBox">
                     <a href="">
                         <span class="detailImageText">Endre bilde</span>
-                        <img id="detailImagePreview" class="detailImagePreview beverage" ng-src="{{beverage.image}}"
-                             ng-click="chooseImage()" ng-show="beverage.imageData" />
+                        <img id="detailImagePreview" class="detailImagePreview beverage" ng-src="{{image.imageData}}"
+                             ng-click="chooseImage()" ng-show="image.imageData" />
                     </a>
                 </div>
-                <div class="inputField" ng-hide="beverage.imageData">
+                <div class="inputField" ng-hide="image.imageData">
                     <a href="" ng-click="chooseImage()">Legg til bilde</a>
                 </div>
                 <input type="file" id="detailImage" class="hidden" custom-on-change="changeBeverageImage" />
@@ -42,5 +42,8 @@
                 <button type="submit">{{beverage.$id ? 'Oppdater' : 'Lagre'}}</button>
             </div>
         </div>
+    </form>
+    <form name="imageForm" ng-show="false">
+        <input type="hidden" ng-model="image.imageData"/>
     </form>
 </article>

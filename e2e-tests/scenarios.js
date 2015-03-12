@@ -1,5 +1,14 @@
 'use strict';
 var shared = require('./shared/shared.js');
+var path = require('path');
+var fs = require('fs');
+
+function writeScreenShot(data, filename) {
+    var stream = fs.createWriteStream(filename);
+
+    stream.write(new Buffer(data, 'base64'));
+    stream.end();
+}
 
 describe('kokogvin', function () {
 
@@ -25,6 +34,9 @@ describe('kokogvin', function () {
             browser.get('#/recipe/list');
             shared.login();
         });
+        afterEach(function() {
+            shared.logout();
+        });
 
         it('shows recipes', function () {
             expect(element.all(by.css('.detail a h4')).count()).toEqual(3);
@@ -46,9 +58,11 @@ describe('kokogvin', function () {
             shared.login();
             element(by.linkText("Vin")).click();
         });
+        afterEach(function() {
+            shared.logout();
+        });
 
         it('shows wines', function () {
-            browser.debugger();
             expect(element.all(by.css('.detail a h4')).count()).toEqual(4);
         });
 
@@ -71,11 +85,43 @@ describe('kokogvin', function () {
             browser.get('#/recipe/list');
             shared.login();
         });
+        afterEach(function() {
+            shared.logout();
+        });
 
         it ('shows a recipe', function() {
             element(by.linkText('Bacalao')).click();
-            browser.debugger();
             expect(element(by.css(".instructions")).getText()).toEqual('Just do it');
+        });
+    });
+
+    describe('create recipe', function() {
+        beforeEach(function() {
+            browser.get('#/recipe/list');
+            shared.login();
+        });
+        afterEach(function() {
+            shared.logout();
+        });
+
+        it ('creates a recipe', function() {
+            element(by.linkText('Oppskrifter')).click();
+            element(by.linkText('Ny oppskrift')).click();
+            element(by.css(".name")).sendKeys("Filet mignon a la Turk");
+            element(by.model("recipe.tags")).sendKeys("middag");
+            element(by.model("transients.ingredients1")).sendKeys("Foo foo");
+            attachFile('./bali.jpg');
+            element(by.css(".instructions")).sendKeys("Just do it");
+
+            element(by.buttonText("Lagre")).click();
+            browser.driver.wait(function() {
+                return browser.driver.getCurrentUrl().then(function(url) {
+                    return (/view/).test(url);
+                });
+            });
+            expect(browser.getLocationAbsUrl()).toEqual('/recipe/view/3');
+            expect(element(by.css(".instructions")).getText()).toEqual("Just do it");
+            expect(element(by.css("#detailImagePreview")).getAttribute("src")).toMatch(/.{1000,1000000}/);
         });
     });
 
@@ -84,6 +130,9 @@ describe('kokogvin', function () {
         beforeEach(function () {
             browser.get('#/recipe/list');
             shared.login();
+        });
+        afterEach(function() {
+            shared.logout();
         });
 
         it('updates a recipe', function () {

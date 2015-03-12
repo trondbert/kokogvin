@@ -33,15 +33,11 @@ function addRecipeControllers() {
                     else        $scope.imageForm.$setDirty();
                 });
             };
-
-            $scope.withBreaks = function(input) {
-                return input && input.replace(/\n/g, '<br/>');
-            };
         }
     ]);
 
-    app.controller('RecipeListCtrl', ['$scope', '$controller', '$routeParams', 'StorageService',
-                              function ($scope, $controller, $routeParams, StorageService) {
+    app.controller('RecipeListCtrl', ['$scope', '$controller', '$routeParams', 'RecipeDAO',
+                              function ($scope, $controller, $routeParams, RecipeDAO) {
             $controller('ListCtrl',   {$scope: $scope});
             $controller('RecipeCtrl', {$scope: $scope});
 
@@ -65,9 +61,9 @@ function addRecipeControllers() {
             if ($scope.userId) {
                 if ($routeParams.tags) {
                     var tagList = $routeParams.tags.split("&");
-                    StorageService.findRecipesByTags(tagList, $scope.addRecipe, $scope.imageAdded);
+                    RecipeDAO.findByTags(tagList, $scope.addRecipe, $scope.imageAdded);
                 } else {
-                    StorageService.findAllRecipes($scope.addRecipe, $scope.imageAdded);
+                    RecipeDAO.findAll($scope.addRecipe, $scope.imageAdded);
                 }
                 $scope.$applyAsync();
             }
@@ -75,8 +71,8 @@ function addRecipeControllers() {
     ]);
 
     app.controller('RecipeCreateCtrl',
-                        ['$scope', '$controller', '$location', 'StorageService',
-                function ($scope,   $controller,   $location,   StorageService) {
+                        ['$scope', '$controller', '$location', 'RecipeDAO',
+                function ($scope,   $controller,   $location,   RecipeDAO) {
             $controller('ParentCtrl', {$scope: $scope});
             $controller('RecipeCtrl', {$scope: $scope});
 
@@ -88,7 +84,7 @@ function addRecipeControllers() {
                 $scope.recipe.ingredients = $scope.transients.ingredients1 +
                                             INGREDIENTS_COLUMN_BREAK +
                                             $scope.transients.ingredients2;
-                StorageService.addRecipe($scope.recipe, $scope.image, function (result) {
+                RecipeDAO.updateOrInsert($scope.recipe, $scope.image, function (result) {
                     if (result) { $scope.showNotice(result) }
                     else {
                         $scope.$apply(function() {
@@ -103,8 +99,8 @@ function addRecipeControllers() {
     ]);
 
     app.controller('RecipeEditCtrl',
-                        ['$scope', '$controller', '$location', '$routeParams', 'StorageService',
-                function ($scope, $controller, $location, $routeParams, StorageService)
+                        ['$scope', '$controller', '$location', '$routeParams', 'RecipeDAO',
+                function ($scope,   $controller,   $location,   $routeParams,   RecipeDAO)
         {
             $controller('ParentCtrl', {$scope: $scope});
             $controller('RecipeCtrl', {$scope: $scope});
@@ -119,7 +115,7 @@ function addRecipeControllers() {
                             $location.path("/recipe/list"); });
                     }
                 };
-                StorageService.removeRecipe($scope.recipe, callback);
+                RecipeDAO.remove($scope.recipe, callback);
             };
 
             $scope.save = function ()
@@ -129,52 +125,43 @@ function addRecipeControllers() {
                                             $scope.transients.ingredients2;
 
                 $scope.editRecipeForm.submitted = true;
-                if ($scope.editRecipeForm.$valid) {
-                    if (!$scope.image.imageData) {
-                        $scope.recipe.imageId = null;
-                    }
-                    var imageDirty = $scope.imageForm.$dirty;
-                    var error = "Oppdatering av '" + $scope.recipe.name + "' feila.";
-                    if ($scope.image) {
-                        $scope.recipe.imageTimestamp = Date.now();
-                    }
-                    StorageService.updateRecipe($scope.recipe, $scope.image, function(result) {
-                        if (result) {
-                            $scope.showNotice(error);
-                        } else if (imageDirty) {
-                            StorageService.updateImage($scope.image, function(result) {
-                                if (result) {
-                                    $scope.showNotice(error);
-                                } else {
-                                    $scope.$apply(function() {
-                                        $location.path('recipe/view/' + $scope.recipe.$id); });
-                                }
-                            });
-                        } else {
-                            $scope.$apply(function() {
-                                $location.path('recipe/view/' + $scope.recipe.$id); });
-                        }
-                    });
-                }
-                else {
+                if (!$scope.editRecipeForm.$valid) {
                     window.scrollTo(0, 0);
+                    return;
                 }
+                if (!$scope.image.imageData) {
+                    $scope.recipe.imageId = null;
+                }
+                var imageDirty = $scope.imageForm.$dirty;
+                var imageToUpdate = imageDirty ? $scope.image : null;
+                if (imageDirty) {
+                    $scope.recipe.imageTimestamp = Date.now();
+                }
+                RecipeDAO.updateOrInsert($scope.recipe, imageToUpdate, function (result) {
+                    if (result) {
+                        $scope.showNotice(error);
+                    } else {
+                        $scope.$apply(function () {
+                            $location.path('recipe/view/' + $scope.recipe.$id);
+                        });
+                    }
+                });
             };
 
             $scope.recipe = {}; $scope.image = {};
-            StorageService.findRecipe($routeParams.recipeId, $scope.recipeFoundCB, $scope.imageFoundCB);
+            RecipeDAO.findById($routeParams.recipeId, $scope.recipeFoundCB, $scope.imageFoundCB);
         }
     ]);
 
     app.controller('RecipeViewCtrl',
-                        ['$scope', '$controller', '$routeParams', 'StorageService',
-                function ($scope,   $controller,   $routeParams,   StorageService)
+                        ['$scope', '$controller', '$routeParams', 'RecipeDAO',
+                function ($scope,   $controller,   $routeParams,   RecipeDAO)
         {
             $controller('ParentCtrl', {$scope: $scope});
             $controller('RecipeCtrl', {$scope: $scope});
 
             $scope.recipe = {}; $scope.image = {};
-            StorageService.findRecipe($routeParams.recipeId, $scope.recipeFoundCB, $scope.imageFoundCB);
+            RecipeDAO.findById($routeParams.recipeId, $scope.recipeFoundCB, $scope.imageFoundCB);
         }
     ]);
 }

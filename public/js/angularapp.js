@@ -47,19 +47,17 @@ function configApp() {
     }]);
 
     if (window.location.host.split(":")[1] == TEST_PORT) {
-        app.service("StorageService", storageServiceMock);
+        window.GenericDAO = GenericDAOMock;
+        app.service("LoginService", LoginServiceMock);
+    } else {
+        app.service("LoginService", LoginService);
     }
-    else {
-        app.service('StorageService', storageService);
-    }
+    setupDAOs();
+    app.service('RecipeDAO',    RecipeDAO);
+    app.service('BeverageDAO',  BeverageDAO);
 
     app.controller('ParentCtrl', genericControllers.parent);
     app.controller('ListCtrl', genericControllers.list);
-    /*app.controller('LoginCtrl', ['$scope', '$controller', function ($scope, $controller) {
-        $controller('ParentCtrl', {$scope: $scope});
-
-        $("*[ng-model='user.email']").focus();
-    }]);*/
     app.controller('PlayCtrl', playController);
 
     addRecipeControllers();
@@ -146,11 +144,11 @@ searchFocus = ['$timeout', function ($timeout) {
     };
 }];
 
-loginFocus = ['$timeout', 'StorageService', function ($timeout, StorageService) {
+loginFocus = ['LoginService', function (LoginService) {
 
     function link(scope, element) {
         if (!scope) throw {error: "scope is not set!"};
-        if (!StorageService.loggedIn()) {
+        if (!LoginService.loggedIn()) {
             element[0].focus();
         }
     }
@@ -220,7 +218,7 @@ var superbodyDirective =  ['$interval', function($interval) {
     return {
         link: link
     };
-}]
+}];
 
 
 findRecipeById = function (recipes, id) {
@@ -235,7 +233,7 @@ var TRACE = { ordinal: 0, text: "TRACE" };
 var DEBUG = { ordinal: 1, text: "DEBUG" };
 var WARN  = { ordinal: 2, text: "WARN"  };
 var ERROR = { ordinal: 2, text: "ERROR" };
-var LOG_LEVEL = TRACE;
+var LOG_LEVEL = DEBUG;
 
 (function logLevels() {
 }(TRACE, DEBUG, WARN, ERROR));
@@ -279,8 +277,9 @@ var localCache = { };
 localCache.enabled = true;
 
 localCache.findCachedImage = function(imageId, imageTimestamp) { if(!this.enabled) return null;
-    var cachedTimestamp = window.localStorage["kokogvin.image." + imageId + ".timestamp"];
-    if (imageTimestamp && imageTimestamp < cachedTimestamp) {
+    var cachedTimestampStr = window.localStorage["kokogvin.image." + imageId + ".timestamp"];
+    var cachedTimestamp = cachedTimestampStr ? parseInt(cachedTimestampStr) : 0;
+    if (imageTimestamp && imageTimestamp > cachedTimestamp) {
         return null;
     }
     var imageData = window.localStorage["kokogvin.image." + imageId + ".imageData"];
@@ -326,7 +325,6 @@ localCache.storeCachedImage = function(image) {
     }
     traceMsg(window.localStorage[imageDataKey]);
     traceMsg(window.localStorage[imageTimestampKey]);
-
 };
 
 localCache.removeCachedImage = function(imageId) {
@@ -356,9 +354,7 @@ function keyup(e) {
     var char = String.fromCharCode(e.keyCode || e.charCode);
     if (e.ctrlKey && e.shiftKey && char == "S") {
         window.scope.$apply( function() {
-            window.scope.searchShown = true ^ window.scope.searchShown;
+            window.scope.searchShown = !window.scope.searchShown;
         });
     }
 }
-
-

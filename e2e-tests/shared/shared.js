@@ -14,3 +14,8 @@ module.exports.login = function() {
     //    });
     //});
 };
+
+module.exports.logout = function() {
+    element(by.linkText('Logg ut')).click();
+};
+

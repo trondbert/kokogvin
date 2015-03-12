@@ -1,88 +1,70 @@
 
-var loggedInState = false;
 var mockCredentials = {
     password: {email: "tester@testopia.uk"}
 };
 
-function storageServiceMock() {
+var GenericDAOMock = {
+    findAllEntities : function() {
+        var entities = /recipes\/?$/.test(this.baseUrl) && storageMock.recipes;
+        entities = entities || /images\/?$/.test(this.baseUrl) && storageMock.images;
+        entities = entities || /beverages\/?$/.test(this.baseUrl) && storageMock.beverages;
+        return entities;
+    },
+    findAll : function(callback) {
+        this.findAllEntities().forEach(function(ent) {
+            setTimeout(function() { callback(ent); }, 100);
+        });
+    },
+    findById : function (id, callback) {
+        if (!id) { callback(null); return; }
+        var entity = null;
+        this.findAllEntities().forEach(function(item) {
+            if (item.$id == id) {
+                entity = item;
+            }
+        });
+        setTimeout(function() { callback(entity); }, 100);
+    },
+    updateOrInsert : function(entity, callback) {
+        var entityDB = null;
+        if (entity.$id) {
+            entityDB = this.findById(entity.$id, function(){});
+        } else {
+            var entities = this.findAllEntities();
+            entityDB = {};
+            entities.push(entityDB);
+            entity.$id = entityDB.$id = entities.length - 1;
+        }
+        var dataMap = this.getDataMap(entity);
+        Object.keys(dataMap).forEach(function(key) {
+            entityDB[key] = dataMap[key];
+        });
+        setTimeout(function() { callback(null); }, 100);
+    }
+};
+
+function LoginServiceMock($firebase, fbUrls) {
+    debugMsg($firebase + " " + fbUrls);
     this.onAuthCallback = function() {};
 
-    this.findAllRecipes = function (recipeFoundCB, imageAddedFn) {
-        this.recipes.forEach(function(recipe) {
-            var image = {$id: recipe.imageId, imageData: recipe.imageData };
-            recipeFoundCB(recipe);
-            imageAddedFn(recipe, image);
-        });
-        return this.recipes;
+    this.loggedInState = function() {
+        return /true/.test( window.localStorage["kokogvin.mock.loggedIn"] );
     };
-
-    this.findRecipe = function (recipeId, recipeFoundFn, imageFoundFn) {
-        var recipe = this.findRecipeById(recipeId);
-
-        recipeFoundFn(recipe);
-        imageFoundFn();
-        return recipe;
-    };
-
-    this.addRecipe = function (recipe, recipes) {
-        var numberOfRecipes = Object.keys(recipes).length;
-        recipe.$id = '' + (numberOfRecipes + 1);
-        recipes[recipe.$id] = recipe;
-    };
-
-    this.updateRecipe = function (/*recipe*/) {
-        return true;
-    };
-
-    this.findRecipeById = function(recipeId) {
-        var theRecipe = null;
-        this.recipes.forEach(function(item) {
-            if (item.$id == recipeId) {
-                theRecipe = item;
-            }
-        });
-        return theRecipe;
-    };
-
-    this.findAllBeverages = function () {
-        return this.beverages;
-    };
-
-    this.findBeverage = function (beverageId) {
-        return this.findBeverageById(beverageId);
-    };
-
-    this.addBeverage = function (beverage, beverages) {
-        var numberOfBeverages = beverages.length;
-        beverage.$id = '' + (numberOfBeverages + 1);
-        beverages[beverage.$id] = beverage;
-    };
-
-    this.updateBeverage = function () {
-        return true;
-    };
-
-    this.findBeverageById = function(beverageId) {
-        var theBeverage = null;
-        this.beverages.forEach(function(item) {
-            if (item.$id == beverageId) {
-                theBeverage = item;
-            }
-        });
-        return theBeverage;
+    this.setLoggedInState = function(loggedInState) {
+        window.localStorage["kokogvin.mock.loggedIn"] = "" + loggedInState;
     };
 
     this.loggedIn = function() {
-        if (loggedInState) { this.onAuthCallback(mockCredentials); }
+        if (this.loggedInState()) { this.onAuthCallback(mockCredentials); }
         else               { this.onAuthCallback(null); }
-        return loggedInState;
+        return this.loggedInState();
     };
 
     this.authWithPassword = function(credentials, callback) {
         debugMsg("Mocked auth");
         var service = this;
         setTimeout(function() {
-            loggedInState = true;
+            service.setLoggedInState(true);
             service.onAuthCallback(mockCredentials);
             callback(null);
         }, 100);
@@ -90,7 +72,7 @@ function storageServiceMock() {
 
     this.onAuth = function(callback) {
         this.onAuthCallback = callback;
-        if (loggedInState) {
+        if (this.loggedInState()) {
             callback(mockCredentials);
         } else {
             callback(null);
@@ -98,9 +80,11 @@ function storageServiceMock() {
     };
 
     this.logOut = function() {
-        loggedInState = false;
+        this.setLoggedInState(false);
     };
+}
 
+function StorageMock() {
     this.recipes = [];
     this.recipes[0] = { $id: '1', name: 'Lasagne', tags: 'pasta',
         ingredients : 'En teskje kardemomme\nEn liter gløgg\n' + INGREDIENTS_COLUMN_BREAK + 'Litt til\nPynt med persille',
@@ -118,6 +102,10 @@ function storageServiceMock() {
         imageId : 'ri2',
         imageData: recipeImageDataMock[2]};
 
+    this.images = [ { $id : 'ri0',  imageData : recipeImageDataMock[0]},
+        { $id : 'ri1',  imageData : recipeImageDataMock[1]},
+        { $id : 'ri2',  imageData : recipeImageDataMock[2]} ];
+
     this.beverages = [];
     this.beverages[0] = { $id: '1', name: 'Wine Dine 69', comments: 'God', imageData: beverageImageDataMock[0]};
     this.beverages[1] = { $id: '2', name: 'Rioja 123', comments: 'Meget', imageData: beverageImageDataMock[0]};
@@ -125,23 +113,25 @@ function storageServiceMock() {
     this.beverages[3] = { $id: '4', name: 'Rioja Majoralis', comments: 'Noget', imageData: beverageImageDataMock[0]};
 }
 
+storageMock = new StorageMock();
+
 playController = ['$scope', '$location', 'fbUrls',
     function ($scope, $location, fbUrls) {
 
-    $scope.continueLoop = true;
+        $scope.continueLoop = true;
 
-    $scope.updateRecipes = function() {
-        var recipeRef = new Firebase(fbUrls.recipes);
-        recipeRef.on("child_added", function(snap) {
-            if ($scope.continueLoop) {
-                console.log(snap.key());
-                console.log(snap.val().name);
-                snap.ref().update({ imageTimestamp: Date.now() });
-                $scope.continueLoop = false;
-            }
-        });
-    };
-    $scope.updateRecipes();
-}
+        $scope.updateRecipes = function() {
+            var recipeRef = new Firebase(fbUrls.recipes);
+            recipeRef.on("child_added", function(snap) {
+                if ($scope.continueLoop) {
+                    console.log(snap.key());
+                    console.log(snap.val().name);
+                    snap.ref().update({ imageTimestamp: Date.now() });
+                    $scope.continueLoop = false;
+                }
+            });
+        };
+        $scope.updateRecipes();
+    }
 ];
 

@@ -2,7 +2,7 @@
 </div>
 
 <article>
-    <form novalidate ng-class="{submitted:editRecipeForm.submitted}" name="editRecipeForm" ng-show="recipe">
+    <form novalidate class="editEntityForm" ng-class="{submitted:editRecipeForm.submitted}" name="editRecipeForm" ng-show="recipe">
 
         <div class="detailTop">
             <div class="detailLeftSide">
@@ -58,9 +58,10 @@
                 <button ng-click="save()">{{recipe.$id ? 'Oppdater' : 'Lagre'}}</button>
             </div>
 
-            <a href="" ng-click="remove()" ng-show="recipe.$id">Slett oppskriften!</a>
-            |
-            <a href="/#/recipe/view/{{recipe.$id}}" ng-show="recipe.$id">Tilbake til oppskriften</a>
+            <p ng-show="recipe.$id">
+                <a href="" ng-click="remove()" ng-show="recipe.$id">Slett oppskriften!</a> |
+                <a href="/#/recipe/view/{{recipe.$id}}" ng-show="recipe.$id">Tilbake til oppskriften</a>
+            </p>
         </div>
 
     </form>
