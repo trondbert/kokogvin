@@ -154,14 +154,19 @@ function addRecipeControllers() {
     ]);
 
     app.controller('RecipeViewCtrl',
-                        ['$scope', '$controller', '$routeParams', 'RecipeDAO',
-                function ($scope,   $controller,   $routeParams,   RecipeDAO)
+                        ['$scope', '$controller', '$location', '$routeParams', 'RecipeDAO',
+                function ($scope,   $controller,   $location,   $routeParams,   RecipeDAO)
         {
             $controller('ParentCtrl', {$scope: $scope});
             $controller('RecipeCtrl', {$scope: $scope});
 
             $scope.recipe = {}; $scope.image = {};
             RecipeDAO.findById($routeParams.recipeId, $scope.recipeFoundCB, $scope.imageFoundCB);
+
+            $scope.edit = function() 
+            {
+                $location.path("recipe/edit/" + $scope.recipe.$id);
+            } 
         }
     ]);
 }

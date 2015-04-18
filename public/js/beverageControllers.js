@@ -144,15 +144,19 @@ function addBeverageControllers() {
         ]);
 
     app.controller('BeverageViewCtrl',
-        ['$scope', '$controller', '$routeParams', 'BeverageDAO',
-            function ($scope,   $controller,   $routeParams,   BeverageDAO)
-            {
-                $controller('ParentCtrl', {$scope: $scope});
-                $controller('BeverageCtrl', {$scope: $scope});
+                ['$scope', '$controller', '$location', '$routeParams', 'BeverageDAO',
+        function ($scope,   $controller,   $location,   $routeParams,   BeverageDAO)
+        {
+            $controller('ParentCtrl', {$scope: $scope});
+            $controller('BeverageCtrl', {$scope: $scope});
 
-                $scope.beverage = {}; $scope.image = {};
-                BeverageDAO.findById($routeParams.beverageId, $scope.beverageFoundCB, $scope.imageFoundCB);
+            $scope.beverage = {}; $scope.image = {};
+            BeverageDAO.findById($routeParams.beverageId, $scope.beverageFoundCB, $scope.imageFoundCB);
+
+            $scope.edit = function() {
+                $location.path("beverage/edit/" + $scope.beverage.$id);
             }
-        ]);
+        }
+    ]);
 }
 

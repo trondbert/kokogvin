@@ -349,12 +349,18 @@ utils.clearLocalStorage = localCache.clearAll;
 function keyup(e) {
     e = e || event;
     var evt = e.type;
-    while (evt.length < 10) evt += ' ';
+    while (evt.length < 10) evt += ' ';	
 
     var char = String.fromCharCode(e.keyCode || e.charCode);
     if (e.ctrlKey && e.shiftKey && char == "S") {
         window.scope.$apply( function() {
             window.scope.searchShown = !window.scope.searchShown;
         });
+    }
+    else if (!e.ctrlKey && !e.shiftKey && char == "E") {
+    	if (typeof window.scope.edit == 'function')
+			window.scope.$apply( function() { 
+				window.scope.edit();
+			});
     }
 }
