@@ -35,8 +35,9 @@ var genericControllers = {
 
             $scope.changeImage = function (entity, callback) {
                 var file = $("#detailImage")[0].files[0];
-                if (file.size > 61440) {
-                    callback("Bildet kan ikke være større enn 60 KB");
+                if (file.size > 102400) {
+                    $("#detailImage")[0].files = [];
+                    callback("Bildet kan ikke være større enn 100 KB");
                     return;
                 }
                 var reader = new FileReader();
