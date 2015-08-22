@@ -163,7 +163,7 @@ function addRecipeControllers() {
             $scope.recipe = {}; $scope.image = {};
             RecipeDAO.findById($routeParams.recipeId, $scope.recipeFoundCB, $scope.imageFoundCB);
 
-            $scope.edit = function() 
+            $scope.edit = function()
             {
                 $location.path("recipe/edit/" + $scope.recipe.$id);
             } 

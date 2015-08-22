@@ -122,7 +122,6 @@ select[multiple] {
 }
 
 .editEntityForm textarea {
-    width: 250px;
     height: 150px;
     overflow: auto; /* IE always renders vertical scrollbar without this */
     vertical-align: top;
@@ -391,7 +390,7 @@ article {
     padding: 0 0 1em 0;
 }
 
-.inputField input, .inputField textarea, .inputField span {
+.inputField input, .inputField span {
     float: right;
 }
 

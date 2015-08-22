@@ -53,8 +53,12 @@ var GenericDAO = {
             var snap = baseRef.push();
             entity.$id = snap.key();
             ref = snap.ref();
+            entity.dateCreated = utils.dateToString(new Date());
         }
-        ref.update(this.getDataMap(entity),
+        var dataMap = this.getDataMap(entity);
+        dataMap.dateModified = utils.dateToString(new Date());
+        dataMap.dateCreated = entity.dateCreated || utils.dateToString(new Date());
+        ref.update(dataMap,
             function (result) {
                 if (result) {
                     errorMsg(result);
@@ -196,8 +200,10 @@ function setupDAOs() {
             else {
                 GenericDAO.findById.call(this, id, function (img) {
                     callback(img);
-                    if (img)
+                    if (img) {
                         localCache.storeCachedImage(img);
+                        debugMsg("Image size: " + img.imageData.length + " - " + img.$id);
+                    }
                     else if (id)
                         localCache.removeCachedImage(id);
                 });

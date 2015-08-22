@@ -276,7 +276,9 @@ var localCache = { };
 
 localCache.enabled = true;
 
-localCache.findCachedImage = function(imageId, imageTimestamp) { if(!this.enabled) return null;
+localCache.findCachedImage = function(imageId, imageTimestamp) {
+    if(!this.enabled) return null;
+
     var cachedTimestampStr = window.localStorage["kokogvin.image." + imageId + ".timestamp"];
     var cachedTimestamp = cachedTimestampStr ? parseInt(cachedTimestampStr) : 0;
     if (imageTimestamp && imageTimestamp > cachedTimestamp) {
@@ -349,7 +351,7 @@ utils.clearLocalStorage = localCache.clearAll;
 function keyup(e) {
     e = e || event;
     var evt = e.type;
-    while (evt.length < 10) evt += ' ';	
+    while (evt.length < 10) evt += ' ';    
 
     var char = String.fromCharCode(e.keyCode || e.charCode);
     if (e.ctrlKey && e.shiftKey && char == "S") {
@@ -358,9 +360,27 @@ function keyup(e) {
         });
     }
     else if (!e.ctrlKey && !e.shiftKey && char == "E") {
-    	if (typeof window.scope.edit == 'function')
-			window.scope.$apply( function() { 
-				window.scope.edit();
-			});
+        if (typeof window.scope.edit == 'function')
+            window.scope.$apply( function() { 
+                window.scope.edit();
+            });
     }
 }
+
+utils.dateToString = function(date) {
+    if (date == null) return null;
+
+    return "" + (date.getYear() + 1900) +
+                ("0" + (date.getMonth() + 1)).slice(-2) +
+                ("0" + date.getDate()).slice(-2);
+};
+
+utils.stringToDate = function(dateString) {
+    if (dateString == null || dateString == "") return null;
+
+    var year = parseInt(dateString.slice(0,4));
+    var month = parseInt(dateString.slice(4,6)) - 1;
+    var day = parseInt(dateString.slice(6,8));
+    return new Date(year, month, day);
+};
+
