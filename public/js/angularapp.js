@@ -274,7 +274,7 @@ utils.containsAllTags = function(entity, tags) {
 
 var localCache = { };
 
-localCache.enabled = true;
+localCache.enabled = false;
 
 localCache.findCachedImage = function(imageId, imageTimestamp) {
     if(!this.enabled) return null;

@@ -18,7 +18,7 @@
     "postinstall": "bower install",
 
     "prestart": "npm install",
-    "start":            "http-server public -a localhost -p 8080 -c-1 &>logs/live.log &",
+    "start": "http-server public -a localhost -p 8080 -c-1 &>logs/live.log &",
     "start-for-tests":  "http-server public -a localhost -p 1337 -c-1 &>logs/tests.log &",
     "pretest": "npm install",
     "test": "karma start karma.conf.js",
