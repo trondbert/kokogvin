@@ -5,3 +5,7 @@ logs/
 *.iml
 *.log
 *.save
+*.js
+*.js.map
+node_modules/
+typings/

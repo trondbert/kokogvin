@@ -1,0 +1,67 @@
+<div *ngIf="recipe">
+    <div class="detailTop">
+        <div class="detailLeftSide">
+
+            <div class="inputField">
+                <label for="name">Navn:</label>
+                <input [(ngModel)]="recipe.name" type="text" id="name"/>
+            </div>
+            <div class="inputField">
+                <label for="recipeTags">Kategorier:</label>
+                <input [(ngModel)]="recipe.tags" type="text" id="recipeTags"/>
+            </div>
+            <div class="inputField">
+                <label for="recipePortions">Porsjoner:</label>
+                <input [(ngModel)]="recipe.portions" type="text" id="recipePortions"/>
+            </div>
+
+            <div class="detailImageBox">
+                <span class="detailImageText">{{recipe.image ? 'Endre bilde' : 'Legg til bilde'}}</span>
+                <img src="{{recipe.image ? recipe.image.imageData : placeholderImage}}" id="detailImagePreview"
+                     class="detailImagePreview"/>
+            </div>
+            <input type="file" id="detailImage" class="hidden"/>
+        </div>
+
+        <div class="detailRightSide">
+
+            <div class="inputField">
+                <h3>Ingredienser:</h3>
+                <textarea [(ngModel)]="recipe.transients.ingredients1" id="recipeIngredients1" class="ingredients"
+                          title="Ingredienser"></textarea>
+                <textarea [(ngModel)]="recipe.transients.ingredients2" id="recipeIngredients2" class="ingredients"
+                          title="Ingredienser"></textarea>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="detailBottom">
+        <h3>Slik gjør du:</h3>
+
+        <div class="inputField">
+            <textarea [(ngModel)]="recipe.instructions" class="instructions"
+                      title="Slik gjør du"></textarea>
+        </div>
+
+        <div class="inputField">
+            <button (click)="save()">{{recipe.$id ? 'Oppdater' : 'Lagre'}}</button>
+        </div>
+    </div>
+</div>
+
+
+<div *ngIf="recipe">
+    <h2>{{recipe.name}} details!</h2>
+    <div>
+        <label>id: </label>{{recipe.id}}
+    </div>
+    <div>
+        <label>name: </label>
+        <input [(ngModel)]="recipe.name" placeholder="name"/>
+        <img *ngIf="recipe.image" [src]="recipe.image.imageData">
+        <input *ngIf="recipe.image" [ngModel]="recipe.image.imageData" placeholder="URL eller Hex-streng"/>
+    </div>
+    <button (click)="save()">Save</button>
+    <button (click)="goBack()">Back</button>
+</div>

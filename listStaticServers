@@ -1,4 +1,0 @@
-#!/bin/bash
-
-ps -ef | grep node.*http-server | grep -v "grep"
-
