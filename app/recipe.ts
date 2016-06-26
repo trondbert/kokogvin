@@ -6,4 +6,8 @@ export class Recipe {
   portions:string;
   transients;
   image;
+  imageId;
+  dateCreated;
+  dateModified;
+  instructions;
 }

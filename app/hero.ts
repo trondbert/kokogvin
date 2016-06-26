@@ -1,6 +1,6 @@
 export class Hero {
-  key:string;
-  id:number;
-  name:string;
-  imageData:string;
+    key:string;
+    id:number;
+    name:string;
+    imageData:string;
 }

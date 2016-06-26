@@ -1,0 +1,59 @@
+.inputField {
+    clear: both;
+    padding: 0 0 1em 0;
+}
+
+.inputField > label {
+    color: #700;
+}
+
+.inputField > input {
+    width: 70%;
+    float: right;
+    font-size: 0.9em;
+}
+
+.detailTop {
+
+}
+
+.detailLeftSide {
+    display: inline-block;
+    width: 43%;
+    padding: 0.3em;
+    vertical-align: top;
+}
+
+.detailRightSide {
+    display: inline-block;
+    width: 55%;
+    padding: 0.3em;
+    vertical-align: top;
+}
+
+textarea.ingredients {
+    height: 20em;
+    display: inline-block;
+    width: 49%;
+}
+
+.instructions {
+    width: 100%;
+    height: 15em;
+}
+
+.imageBox {
+    position: relative;
+}
+
+.imageBox:hover > .imageText {
+    visibility: visible;
+}
+
+.imageText {
+    position: absolute;
+    font-size: 1.2em;
+    color: white;
+    background-color: black;
+    visibility: hidden;
+}

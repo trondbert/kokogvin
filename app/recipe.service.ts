@@ -1,6 +1,5 @@
 import { Component, Injectable, OnInit } from '@angular/core';
 
-import {HEROES} from "./mock-heroes";
 import {Recipe} from "./recipe";
 import {ImageService} from "./image.service";
 import {FirebaseFactory} from "./firebase.factory";
@@ -8,62 +7,91 @@ import {FirebaseFactory} from "./firebase.factory";
 @Injectable()
 export class RecipeService {
 
-  constructor(private imageService:ImageService) {
-  }
+    constructor(private imageService:ImageService) {
+    }
 
-  getFirebaseRef(url) {
-    return FirebaseFactory.getFirebaseRef(url);
-  }
+    getFirebaseRef(url) {
+        return FirebaseFactory.getFirebaseRef(url);
+    }
 
-  getRecipes(fn, fnImg) {
-    var recipesRef = this.getFirebaseRef('recipes/').orderByChild("name");
-    var _imageService = this.imageService;
+    getRecipes(fn) {
+        var recipesRef = this.getFirebaseRef('recipes/').orderByChild("name");
+        var _imageService = this.imageService;
+        var _recipeFromStorage = RecipeService.recipeFromStorage;
 
-    recipesRef.on('child_added', function (data) {
-      console.log("DEBUG added " + data.key);
-      var recipeFb = data.val();
-      if (recipeFb) {
-        console.log("DEBUG adding " + recipeFb.name);
-        fn.call(this, {key: data.key, id: recipeFb.id, name: recipeFb.name});
+        recipesRef.on('child_added', function (data) {
 
-        _imageService.getImage(data.key, fnImg);
-      }
-      else
-        console.log("DEBUG hero undefined");
-    });
-  }
+            var recipeFb = data.val();
+            if (recipeFb) {
+                var recipe = _recipeFromStorage(data.key, recipeFb);
+                fn.call(this, recipe);
 
-  getRecipe(key:string, fn, fnImg) {
-    var recipeRef = this.getFirebaseRef('recipes/' + key);
-    var _imageService = this.imageService;
+                var imgCallback = function (img) {
+                    recipe.image = img;
+                };
+                _imageService.getImage(recipe.imageId, imgCallback);
+            }
+            else
+                console.log("DEBUG hero undefined");
+        });
+    }
 
-    recipeRef.on('value', function (data) {
-      console.log("DEBUG found " + data.key);
-      var recipeFb = data.val();
-      if (recipeFb) {
-        console.log("DEBUG found " + recipeFb.name);
+    getRecipe(key:string, fn) {
+        var recipeRef = this.getFirebaseRef('recipes/' + key);
+        var _imageService = this.imageService;
+        var _recipeFromStorage = RecipeService.recipeFromStorage;
+
+        recipeRef.on('value', function (data) {
+            var recipeFb = data.val();
+            if (recipeFb) {
+                var recipe = _recipeFromStorage(data.key, recipeFb);
+                fn.call(this, recipe);
+
+                var imgCallback = function (img) {
+                    recipe.image = img;
+                };
+                _imageService.getImage(recipeFb.imageId, imgCallback);
+            }
+            else
+                console.log("DEBUG hero undefined");
+        });
+    }
+
+    static recipeFromStorage(key, recipeFb) {
         var recipe:Recipe = new Recipe();
-        recipe.key = data.key;
-        recipe.id = recipeFb.id;
+        recipe.dateCreated = recipeFb.dateCreated;
+        recipe.dateModified = recipeFb.dateModified;
+        recipe.imageId = recipeFb.imageId;
+        recipe.instructions = recipeFb.instructions;
+        recipe.key = key;
         recipe.name = recipeFb.name;
-        recipe.transients = {ingredients1: recipeFb.ingredients, ingredients2: ""};
-        recipe.tags = recipeFb.tags;
         recipe.portions = recipeFb.portions;
-        fn.call(this, recipe);
+        recipe.tags = recipeFb.tags;
+        recipe.transients = {
+            ingredients1: recipeFb.ingredients.split("~*/|")[0] || "",
+            ingredients2: recipeFb.ingredients.split("~*/|")[1] || "" };
+        return recipe;
+    };
 
-        _imageService.getImage(recipeFb.imageId, fnImg);
-      }
-      else
-        console.log("DEBUG hero undefined");
-    });
-  }
+    static recipeForStorage(recipe) {
+        return {
+            dateCreated: recipe.dateCreated,
+            dateModified: recipe.dateModified,
+            imageId: recipe.imageId,
+            ingredients: recipe.transients.ingredients1 + "~*/|" + recipe.transients.ingredients2,
+            instructions: recipe.instructions,
+            name: recipe.name,
+            portions: recipe.portions,
+            tags: recipe.tags,
+        };
+    }
 
-  saveRecipe(recipe:Recipe) {
-    var heroesRef = this.getFirebaseRef("recipes/");
-    var updates = {};
-    updates[recipe.key] = recipe;
+    saveRecipe(recipe:Recipe) {
+        var recipesRef = this.getFirebaseRef("recipes/");
+        console.log(recipe.tags);
 
-    heroesRef.update(updates);
-  }
+        //noinspection TypeScriptUnresolvedFunction
+        recipesRef.child(recipe.key).set(RecipeService.recipeForStorage(recipe));
+    }
 
 }

@@ -1,58 +1,44 @@
 import { RouteConfig, ROUTER_DIRECTIVES, ROUTER_PROVIDERS } from '@angular/router-deprecated';
 import { Component } from '@angular/core';
 
-import {HeroesComponent} from "./heroes.component";
-import {HeroService} from "./hero.service";
-import {DashboardComponent} from "./dashboard.component";
-import {HeroDetailComponent} from "./hero-detail.component";
-import {RecipeDetailComponent} from "./recipe-detail.component";
 import {ImageService} from "./image.service";
 import {RecipeService} from "./recipe.service";
+import {RecipesComponent} from "./recipes.component";
+import {RecipeEditComponent} from "./recipe-edit.component";
 
 
 @Component({
-  selector: 'my-app',
-  template: `
-    <h1>{{title}}</h1>
-    <nav>
-      <a [routerLink]="['Dashboard']">Dashboard</a>
-      <a [routerLink]="['Heroes']">Heroes</a>
-    </nav>
-    <router-outlet></router-outlet>
-  `,
-  styleUrls: ['app/app.component.css'],
-  directives: [ROUTER_DIRECTIVES],
-  providers: [
-    ROUTER_PROVIDERS,
-    HeroService,
-    ImageService,
-    RecipeService
-  ]
+    selector: 'app',
+    template: `
+        <h1 class="siteHeader">{{title}}</h1>
+        <nav>
+            <a [routerLink]="['Recipes']">{{recipesLinkText}}</a>
+            <!--<a [routerLink]="['Beverages']">{{beveragesLinkText}}</a>-->
+        </nav>
+        <router-outlet></router-outlet>
+    `,
+    styleUrls: ['app/app.component.css'],
+    directives: [ROUTER_DIRECTIVES],
+    providers: [
+        ROUTER_PROVIDERS,
+        ImageService,
+        RecipeService
+    ]
 })
 @RouteConfig([
-  {
-    path: '/dashboard',
-    name: 'Dashboard',
-    component: DashboardComponent,
-    useAsDefault: true
-  },
-  {
-    path: '/heroes',
-    name: 'Heroes',
-    component: HeroesComponent
-  },
-  {
-    path: '/detail/:key',
-    name: 'HeroDetail',
-    component: HeroDetailComponent
-  }
-  ,
-  {
-    path: '/recipe/:key',
-    name: 'RecipeDetail',
-    component: RecipeDetailComponent
-  }
+    {
+        path: '/recipe/:key/edit',
+        name: 'RecipeEdit',
+        component: RecipeEditComponent
+    },
+    {
+        path: '/recipes/',
+        name: 'Recipes',
+        component: RecipesComponent
+    }
 ])
 export class AppComponent {
-  title = "Tour of Heroes";
+    title = "Kokogvin";
+    recipesLinkText = "Oppskrifter";
+    beveragesLinkText = "Vin";
 }

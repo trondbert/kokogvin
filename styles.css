@@ -1,39 +1,53 @@
-h2 {
-    color: #444;
-    font-family: Arial, Helvetica, sans-serif;
-    font-weight: lighter;
-}
-
 body {
-    margin: 2em;
+    background-color: #000;
 }
 
-body, input[text], button {
-    color: #888;
-    font-family: Cambria, Georgia;
+.appframe {
+    background-color: #fff;
+    width: 1000px;
+    margin: auto;
+    padding: 1em;
+}
+
+.siteHeader {
+    width: 100%;
+    text-align: center;
+}
+
+img {
+    max-width: 100%;
+}
+
+div, textarea {
+    box-sizing: border-box;
+}
+
+input, textarea, div {
+    font-size: 1em;
+}
+
+html, body {
+    font-size: 16px;
 }
 
 button {
-    font-family: Arial;
-    background-color: #eee;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 4px;
-    cursor: pointer;
+    padding: 0.3em;
+    border-radius: 0.5em;
+    font-size: 1.1em;
+    color: #6666dd;
+    background: linear-gradient(#777777, #EEEEEE, #777777);
     cursor: hand;
 }
 
 button:hover {
-    background-color: #cfd8dc;
+    color:black;
+    box-shadow: #00DD00;
 }
 
-button:disabled {
-    background-color: #eee;
-    color: #aaa;
-    cursor: auto;
-}
-
-/* everywhere else */
-* {
-    font-family: Arial, Helvetica, sans-serif;
+a.imageText {
+    text-decoration: none;
+    font-size: 1.1em;
+    color: #539191;
+    display: inline-block;
+    margin-top: 0.2em;
 }

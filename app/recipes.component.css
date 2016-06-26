@@ -1,0 +1,8 @@
+.recipe {
+    display: inline-block;
+    width: 32%;
+    padding: 0.5em;
+    margin-bottom: 1em;
+    cursor: hand;
+    vertical-align: top;
+}
