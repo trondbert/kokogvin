@@ -19,4 +19,17 @@ export class ImageService {
             }
         });
     }
+
+    saveImage(image, imageKey, callback) {
+        if (imageKey) {
+            var imagesRef = this.getFirebaseRef("images/");
+            //noinspection TypeScriptUnresolvedFunction
+            imagesRef.child(imageKey).set(image);
+        }
+        else {
+            var imagesRef = this.getFirebaseRef("images/");
+            var ref = imagesRef.push(image);
+            callback.call(this, ref.key);
+        }
+    }
 }

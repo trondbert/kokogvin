@@ -4,7 +4,6 @@
     <title>Mat, drikke og kos</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="styles.css">
 
     <script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
     
@@ -25,11 +24,24 @@
             console.error(err);
         });
     </script>
+    <style>
+        body {
+            background-color: #000;
+        }
+        .appframe {
+            background-color: #fff;
+            width: 1000px;
+            max-width: 1000px;
+            margin: auto;
+            padding: 1em;
+        }
+    </style>
 </head>
 <body>
-<div class="appframe">
-    <app>Loading...</app>
-</div>
-
+    <div class="appframe">
+        <app>
+            Loading...
+        </app>
+    </div>
 </body>
 </html>

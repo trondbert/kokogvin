@@ -2,17 +2,17 @@ import { Component, Input, OnInit } from '@angular/core';
 import { RouteParams, Router } from '@angular/router-deprecated';
 
 import {RecipeService} from "./recipe.service";
-import {Recipe} from "./recipe";
-import {RecipeComponent} from "./recipe.component";
 import {ContextService} from "./context.service";
+import {RecipeComponent} from "./recipe.component";
+import {Recipe} from "./recipe";
 declare var $:any;
 
 @Component({
-    selector: 'recipeEdit',
-    templateUrl: 'app/recipe-edit.component.html',
+    selector: 'recipeView',
+    templateUrl: 'app/recipe-view.component.html',
     styleUrls: ['app/app.component.css', 'app/recipe-edit.component.css']
 })
-export class RecipeEditComponent extends RecipeComponent {
+export class RecipeViewComponent extends RecipeComponent implements OnInit {
 
     private recipe:Recipe;
 
@@ -22,10 +22,17 @@ export class RecipeEditComponent extends RecipeComponent {
                 private contextService:ContextService,
                 private routeParams:RouteParams,
                 recipeService:RecipeService) {
+
         super(recipeService);
+        contextService.commands$.subscribe( cmd => {
+            console.log("Command received: " + cmd);
+            if ("deleteRecipe" == cmd)
+            this.deleteRecipe();
+        });
     }
 
     ngOnInit() {
+        super.ngOnInit();
         let key = this.routeParams.get('key');
         var _this = this;
         this.getRecipeService().getRecipe(key,
@@ -35,38 +42,16 @@ export class RecipeEditComponent extends RecipeComponent {
         );
     }
 
-    save() {
-        this.getRecipeService().saveRecipe(this.recipe, function(key) {}); //noinspection TypeScriptUnresolvedVariable
-        window.scrollTo(0, 0);
-    }
-
     static goBack() {
         window.history.back();
     }
 
-    chooseImg() {
-        //noinspection TypeScriptUnresolvedFunction
-        $("#imageChooser").trigger("click");
-    }
-
-    imgChosen(event) {
-        var thiz = this;
-
-        var reader = new FileReader();
-        reader.onloadend = function (e:ProgressEvent) {
-            var hasResult:FileReader = <FileReader>(e.target);
-            //noinspection TypeScriptUnresolvedVariable
-            thiz.recipe.image = {"imageData": hasResult.result};
-        };
-        reader.readAsDataURL(event.target.files[0]);
+    getRouter():Router {
+        return this.router;
     }
 
     getContextService():ContextService {
         return this.contextService;
-    }
-
-    getRouter():Router {
-        return this.router;
     }
 
     deleteRecipe() {

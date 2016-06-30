@@ -1,4 +1,4 @@
-<recipeNew *ngIf="recipe">
+<div *ngIf="recipe">
     <div class="detailTop">
         <div class="detailLeftSide">
 
@@ -42,11 +42,9 @@
                       title="Slik gjør du"></textarea>
         </div>
 
-        <nav class="inputField">
+        <div class="inputField">
             <button (click)="save()">{{recipe.$id ? 'Oppdater' : 'Lagre'}}</button>
-        </nav>
-
-        <button (click)="backToRecipes()">Tilbake</button>
-        <button (click)="deleteRecipe()">Slett</button>
+        </div>
     </div>
-</recipeNew>
+    <button (click)="deleteRecipe()">Slett</button>
+</div>

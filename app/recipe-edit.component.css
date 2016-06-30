@@ -3,10 +3,6 @@
     padding: 0 0 1em 0;
 }
 
-.inputField > label {
-    color: #700;
-}
-
 .inputField > input {
     width: 70%;
     float: right;
@@ -14,7 +10,7 @@
 }
 
 .detailTop {
-
+    margin-top: 1em;
 }
 
 .detailLeftSide {
@@ -51,6 +47,7 @@ textarea.ingredients {
 }
 
 .imageText {
+    z-index: 3;
     position: absolute;
     font-size: 1.2em;
     color: white;

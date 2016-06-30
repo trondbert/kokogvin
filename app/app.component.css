@@ -10,24 +10,52 @@ h2 {
     padding-top: 0;
 }
 
-nav a {
+nav a, nav button {
     padding: 5px 10px;
     text-decoration: none;
     margin-top: 10px;
     display: inline-block;
     background-color: #eee;
     border-radius: 4px;
-}
-
-nav a:visited, a:link {
+    cursor: hand;
+    font-size: 1.1em;
     color: #607D8B;
 }
 
-nav a:hover {
+nav a:hover, nav button:hover {
     color: #039be5;
     background-color: #CFD8DC;
 }
 
 nav a.router-link-active {
     color: #039be5;
+}
+
+.siteHeader {
+    width: 100%;
+    text-align: center;
+}
+
+img {
+    max-width: 100%;
+}
+
+div, textarea {
+    box-sizing: border-box;
+}
+
+input, textarea, div {
+    font-size: 1em;
+}
+
+html, body {
+    font-size: 16px;
+}
+
+a.imageText {
+    text-decoration: none;
+    font-size: 1.1em;
+    color: #539191;
+    display: inline-block;
+    margin-top: 0.2em;
 }

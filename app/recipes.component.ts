@@ -8,7 +8,7 @@ import {RecipeService} from "./recipe.service";
 @Component({
     selector: 'recipes',
     templateUrl: 'app/recipes.component.html',
-    styleUrls: ['app/recipes.component.css'],
+    styleUrls: ['app/app.component.css', 'app/recipes.component.css'],
 })
 export class RecipesComponent implements OnInit {
 
@@ -35,6 +35,18 @@ export class RecipesComponent implements OnInit {
         this.router.navigate(link);
 
         event.preventDefault();
+    }
+
+    newRecipe(event) {
+        let link = ['RecipeNew'];
+        this.router.navigate(link);
+
+        event.preventDefault();
+    }
+
+    deleteRecipe(routerA) {
+        let link = ['Recipes'];
+        routerA.navigate(link);
     }
 }
 

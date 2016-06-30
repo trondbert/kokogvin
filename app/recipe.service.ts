@@ -86,12 +86,39 @@ export class RecipeService {
         };
     }
 
-    saveRecipe(recipe:Recipe) {
-        var recipesRef = this.getFirebaseRef("recipes/");
-        console.log(recipe.tags);
+    saveRecipe(recipe:Recipe, callback) {
+        var thiz = this;
+        if (recipe.image) {
+            var callbackImg = function(imageKey) {
+                recipe.imageId = imageKey;
+                thiz.saveRecipeOnly(recipe);
+            };
+            this.imageService.saveImage(recipe.image, recipe.imageId, callbackImg);
+        }
+        else {
+            var key = this.saveRecipeOnly(recipe);
+            callback.call(this,key);
+        }
+    }
 
-        //noinspection TypeScriptUnresolvedFunction
-        recipesRef.child(recipe.key).set(RecipeService.recipeForStorage(recipe));
+    saveRecipeOnly(recipe:Recipe) {
+        if (recipe.key) {
+            var recipesRef = this.getFirebaseRef("recipes/");
+            console.log(recipe.tags);
+
+            //noinspection TypeScriptUnresolvedFunction
+            recipesRef.child(recipe.key).set(RecipeService.recipeForStorage(recipe));
+        }
+        else {
+            var recipesRef = this.getFirebaseRef("recipes/");
+            var recipeRef = recipesRef.push(RecipeService.recipeForStorage(recipe));
+            return recipeRef.key;
+        }
+    }
+
+    deleteRecipe(recipe:Recipe) {
+        var recipesRef = this.getFirebaseRef("recipes/");
+        recipesRef.child(recipe.key).remove();
     }
 
 }
