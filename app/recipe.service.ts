@@ -77,31 +77,30 @@ export class RecipeService {
         return {
             dateCreated: recipe.dateCreated,
             dateModified: recipe.dateModified,
-            imageId: recipe.imageId,
+            imageId: recipe.imageId || "",
             ingredients: recipe.transients.ingredients1 + "~*/|" + recipe.transients.ingredients2,
-            instructions: recipe.instructions,
-            name: recipe.name,
-            portions: recipe.portions,
-            tags: recipe.tags,
+            instructions: recipe.instructions || "",
+            name: recipe.name || "",
+            portions: recipe.portions || "",
+            tags: recipe.tags || "",
         };
     }
 
     saveRecipe(recipe:Recipe, callback) {
-        var thiz = this;
+        var thisService = this;
         if (recipe.image) {
             var callbackImg = function(imageKey) {
                 recipe.imageId = imageKey;
-                thiz.saveRecipeOnly(recipe);
+                thisService.saveRecipeOnly(recipe, callback);
             };
             this.imageService.saveImage(recipe.image, recipe.imageId, callbackImg);
         }
         else {
-            var key = this.saveRecipeOnly(recipe);
-            callback.call(this,key);
+            this.saveRecipeOnly(recipe, callback);
         }
     }
 
-    saveRecipeOnly(recipe:Recipe) {
+    saveRecipeOnly(recipe:Recipe, callback) {
         if (recipe.key) {
             var recipesRef = this.getFirebaseRef("recipes/");
             console.log(recipe.tags);
@@ -112,8 +111,8 @@ export class RecipeService {
         else {
             var recipesRef = this.getFirebaseRef("recipes/");
             var recipeRef = recipesRef.push(RecipeService.recipeForStorage(recipe));
-            return recipeRef.key;
         }
+        callback.call(this, recipe.key);
     }
 
     deleteRecipe(recipe:Recipe) {

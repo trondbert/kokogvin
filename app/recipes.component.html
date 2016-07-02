@@ -1,6 +1,6 @@
 <div class="recipeList">
     <div *ngFor="let recipe of recipes" class="recipe"
-         (click)="editRecipe(recipe, $event)">
+         (click)="goToRecipe(recipe, $event)">
         <img *ngIf="recipe.image" [src]="recipe.image.imageData">
         <a class="imageText" href="">{{recipe.name}}</a>
     </div>

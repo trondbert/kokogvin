@@ -1,22 +1,30 @@
 import { Component } from '@angular/core';
 import { OnInit } from '@angular/core';
-import { Router } from '@angular/router-deprecated';
 
 import {Recipe} from "./recipe";
 import {RecipeService} from "./recipe.service";
+import {Router} from "@angular/router";
+import {GenericComponent} from "./generic.component";
+import {ContextService} from "./context.service";
+import {Location} from "@angular/common";
 
 @Component({
     selector: 'recipes',
     templateUrl: 'app/recipes.component.html',
     styleUrls: ['app/app.component.css', 'app/recipes.component.css'],
 })
-export class RecipesComponent implements OnInit {
+export class RecipesComponent extends GenericComponent implements OnInit {
 
     recipesMap:{[key:string]:Recipe;} = {};
 
     recipes:Recipe[] = [];
 
-    constructor(private router:Router, private recipeService:RecipeService) { }
+    constructor(private router:Router,
+                private location:Location,
+                private contextService: ContextService,
+                private recipeService:RecipeService) {
+        super();
+    }
 
     ngOnInit() {
         window['_recipes'] = this.recipes;
@@ -30,13 +38,6 @@ export class RecipesComponent implements OnInit {
         );
     }
 
-    editRecipe(recipe:Recipe, event) {
-        let link = ['RecipeEdit', {key: recipe.key}];
-        this.router.navigate(link);
-
-        event.preventDefault();
-    }
-
     newRecipe(event) {
         let link = ['RecipeNew'];
         this.router.navigate(link);
@@ -44,9 +45,14 @@ export class RecipesComponent implements OnInit {
         event.preventDefault();
     }
 
-    deleteRecipe(routerA) {
-        let link = ['Recipes'];
-        routerA.navigate(link);
+    getContextService() {
+        return this.contextService;
+    }
+    getLocation() {
+        return this.location;
+    }
+    getRouter() {
+        return this.router;
     }
 }
 

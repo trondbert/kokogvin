@@ -1,50 +1,37 @@
 <div *ngIf="recipe">
     <div class="detailTop">
         <div class="detailLeftSide">
-
-            <div class="inputField">
-                <label for="name">Navn:</label>
-                <input [(ngModel)]="recipe.name" type="text" id="name"/>
+            <div class="name">
+                {{recipe.name}}
             </div>
-            <div class="inputField">
-                <label for="recipeTags">Kategorier:</label>
-                <input [(ngModel)]="recipe.tags" type="text" id="recipeTags"/>
+            <div *ngIf="recipe.portions" class="portions">
+                Porsjoner: {{recipe.portions}}
             </div>
-            <div class="inputField">
-                <label for="recipePortions">Porsjoner:</label>
-                <input [(ngModel)]="recipe.portions" type="text" id="recipePortions"/>
-            </div>
-
             <div class="imageBox">
-                <span class="imageText">{{recipe.image ? 'Endre bilde' : 'Legg til bilde'}}</span>
                 <img src="{{recipe.image ? recipe.image.imageData : placeholderImage}}"
-                     class="imagePreview" (click)="chooseImg()"/>
+                     class="imagePreview" />
             </div>
-            <input type="file" id="imageChooser" (change)="imgChosen($event)" hidden/>
         </div>
 
         <div class="detailRightSide">
-            <div class="inputField">
-                <h3>Ingredienser:</h3>
-                <textarea [(ngModel)]="recipe.transients.ingredients1" id="recipeIngredients1" class="ingredients"
-                          title="Ingredienser"></textarea>
-                <textarea [(ngModel)]="recipe.transients.ingredients2" id="recipeIngredients2" class="ingredients"
-                          title="Ingredienser"></textarea>
-            </div>
+            <h3>Ingredienser:</h3>
+            <div [innerHTML]="withLineBreaks(recipe.transients.ingredients1)"
+                 class="ingredients"></div>
+            <div [innerHTML]="withLineBreaks(recipe.transients.ingredients2)"
+                 class="ingredients"></div>
         </div>
     </div>
 
     <div class="detailBottom">
         <h3>Slik gjør du:</h3>
 
-        <div class="inputField">
-            <textarea [(ngModel)]="recipe.instructions" class="instructions"
-                      title="Slik gjør du"></textarea>
-        </div>
+        <div [innerHTML]="withLineBreaks(recipe.instructions)" class="inputField"></div>
 
-        <div class="inputField">
-            <button (click)="save()">{{recipe.$id ? 'Oppdater' : 'Lagre'}}</button>
+        <div>
+            <button (click)="editRecipe()">Rediger</button>
+            <button (click)="goBack()">Tilbake</button>
+            <button (click)="goToRecipes()" class="newGroup">Til oppskrifter</button>
+            <button (click)="deleteRecipe()">Slett</button>
         </div>
     </div>
-    <button (click)="deleteRecipe()">Slett</button>
 </div>

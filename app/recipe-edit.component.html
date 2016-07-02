@@ -42,11 +42,12 @@
                       title="Slik gjør du"></textarea>
         </div>
 
-        <nav class="inputField">
+        <div>
             <button (click)="save()">{{recipe.$id ? 'Oppdater' : 'Lagre'}}</button>
-        </nav>
+            <button (click)="goBack()">Tilbake</button>
+            <button (click)="goToRecipes()" class="newGroup">Til oppskrifter</button>
+            <button (click)="deleteRecipe()">Slett</button>
+        </div>
 
-        <button (click)="backToRecipes()">Tilbake</button>
-        <button (click)="deleteRecipe()">Slett</button>
     </div>
 </recipeNew>
