@@ -14,26 +14,29 @@ export class RecipeService {
         return FirebaseFactory.getFirebaseRef(url);
     }
 
+    recipeAdded(data, callback) {
+        var recipeFb = data.val();
+        if (recipeFb) {
+            var recipe = RecipeService.recipeFromStorage(data.key, recipeFb);
+            callback.call(this, recipe);
+
+            var imgCallback = function (img) {
+                recipe.image = img;
+            };
+            this.imageService.getImage(recipe.imageId, imgCallback);
+        }
+    }
+
     getRecipes(fn) {
+        var thisService = this;
         var recipesRef = this.getFirebaseRef('recipes/').orderByChild("name");
-        var _imageService = this.imageService;
-        var _recipeFromStorage = RecipeService.recipeFromStorage;
+        recipesRef.on('child_added', function (data) { thisService.recipeAdded(data, fn); });
+    }
 
-        recipesRef.on('child_added', function (data) {
-
-            var recipeFb = data.val();
-            if (recipeFb) {
-                var recipe = _recipeFromStorage(data.key, recipeFb);
-                fn.call(this, recipe);
-
-                var imgCallback = function (img) {
-                    recipe.image = img;
-                };
-                _imageService.getImage(recipe.imageId, imgCallback);
-            }
-            else
-                console.log("DEBUG hero undefined");
-        });
+    getRecipesByCategory(category, callback) {
+        var thisService = this;
+        var recipesRef = this.getFirebaseRef('recipes/').orderByChild("tag_" + category).equalTo(true);
+        recipesRef.on('child_added', function (data) { thisService.recipeAdded(data, callback); });
     }
 
     getRecipe(key:string, fn) {

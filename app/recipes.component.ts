@@ -22,7 +22,7 @@ export class RecipesComponent extends GenericComponent implements OnInit {
     constructor(private router:Router,
                 private location:Location,
                 private contextService: ContextService,
-                private recipeService:RecipeService) {
+                protected recipeService:RecipeService) {
         super();
     }
 

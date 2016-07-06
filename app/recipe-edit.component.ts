@@ -40,6 +40,8 @@ export class RecipeEditComponent extends RecipeComponent {
                 }
             );
         });
+
+        this.getTagMap("kjøtt middag");
     }
     ngOnDestroy() {
         this.sub.unsubscribe();
@@ -82,5 +84,12 @@ export class RecipeEditComponent extends RecipeComponent {
     }
     getRecipe() {
         return this.recipe;    
+    }
+
+    getTagMap(tags) {
+        for (let tag of tags.split(/ +/)) {
+            var tagFixed = tag.replace(/ø/g, "oe").replace(/å/g, "aa").replace(/æ/g, "ae");
+            console.log(tagFixed);
+        }
     }
 }

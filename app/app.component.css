@@ -1,7 +1,24 @@
 h1 {
-    font-size: 1.2em;
+    font-size: 1.8em;
     color: #999;
     margin-bottom: 0;
+}
+.siteHeader {
+    background-color: #efefef;
+    background-image: -moz-linear-gradient(top, #ffffff, #eaeaea);
+    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1, #eaeaea));
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr = '#ffffff', EndColorStr = '#eaeaea');
+    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorStr='#ffffff', EndColorStr='#eaeaea')";
+
+    padding: 0.2em 0.5em;
+}
+
+.siteHeader h1 {
+    text-shadow: 4px 4px 4px #aaa;
+    color: #666666;
+    line-height: 1.7em;
+    text-align: center;
+    font-weight: normal;
 }
 
 h2 {
@@ -10,16 +27,53 @@ h2 {
     padding-top: 0;
 }
 
+nav {
+    position:relative;
+}
 nav a, button {
-    padding: 5px 10px;
+    padding: 0.3em 0.7em;
     text-decoration: none;
-    margin-top: 10px;
+    margin-top: 0.2em;
     display: inline-block;
     background-color: #eee;
-    border-radius: 4px;
+    border-radius: 0.3em;
     cursor: hand;
     font-size: 1.1em;
     color: #607D8B;
+}
+
+nav li {
+    margin-left: 0.3em;
+}
+
+nav ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+}
+nav li {
+    padding: 0em 0.1em;
+}
+nav > ul > li {
+    display: inline-block;
+    vertical-align: top;
+    width: 13%;
+    position: relative;
+}
+nav > ul > li > ul {
+    position: absolute;
+    padding: 0.5em;
+    opacity: 100;
+    top: 100%;
+    visibility: hidden;
+    background-color: transparent;
+}
+nav > ul > li:hover > ul {
+    visibility: visible;
+}
+li.createNew, li.createNew * {
+    float:right;
 }
 
 button.newGroup {
@@ -35,16 +89,11 @@ nav a.router-link-active {
     color: #039be5;
 }
 
-.siteHeader {
-    width: 100%;
-    text-align: center;
-}
-
 img {
     max-width: 100%;
 }
 
-div, textarea {
+* {
     box-sizing: border-box;
 }
 
@@ -62,4 +111,8 @@ a.imageText {
     color: #539191;
     display: inline-block;
     margin-top: 0.2em;
+}
+
+article {
+    padding: 0.5em;
 }

@@ -9,7 +9,7 @@ declare var $:any;
 @Component({
     selector: 'recipeNew',
     templateUrl: 'app/recipe-edit.component.html',
-    styleUrls: ['app/recipe-edit.component.css']
+    styleUrls: ['app/app.component.css', 'app/recipe-edit.component.css']
 })
 export class RecipeNewComponent implements OnInit {
 

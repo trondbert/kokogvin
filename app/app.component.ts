@@ -9,13 +9,26 @@ import {ROUTER_DIRECTIVES} from "@angular/router";
 @Component({
     selector: 'app',
     template: `
-        <h1 class="siteHeader">{{title}}</h1>
+        <div class="siteHeader"><h1>{{title}}</h1>
         <nav>
-            <a [routerLink]="['/recipes']">{{recipesLinkText}}</a>
-            <!--<a [routerLink]="['Beverages']">{{beveragesLinkText}}</a>-->
-            <!--<a *ngIf="actions && actions['delete']" (click)="component.issueCommand('deleteRecipe')" href="">{{ actions['delete'] }}</a>-->
-            <!--<a (click)="component.deleteRecipe(router)" href="">test</a>-->
+            <ul><li><a [routerLink]="['/recipes/category/middag']">Middag</a>
+                    <ul><li><a [routerLink]="['/recipes/category/middag&fisk']">Fisk</a></li>
+                        <li><a [routerLink]="['/recipes/category/middag&kjoett']">Kjøtt</a></li>
+                        <li><a [routerLink]="['/recipes/category/middag&vegetar']">Vegetar</a></li>
+                    </ul>
+                </li>
+                <li><a [routerLink]="['/recipes/category/snacks']">Snacks</a></li>
+                <li><a [routerLink]="['/recipes/category/TODOvinEntitet']">Vin</a>
+                    <ul><li><a [routerLink]="['/recipes/category/TODOvinEntitet']">Ny vin</a></li></ul>
+                </li>
+                <li class="createNew"><a href="#">&#x2295;</a>
+                    <ul><li><a [routerLink]="['/recipes/new']">Ny&nbsp;oppskrift</a></li>
+                        <li><a [routerLink]="['/recipes/category/TODOvinEntitet']">Ny vin</a></li>
+                    </ul>
+                </li>
+            </ul>
         </nav>
+        </div>
         <router-outlet></router-outlet>
     `,
     styleUrls: ['app/app.component.css'],
@@ -32,16 +45,11 @@ export class AppComponent implements OnInit {
     recipesLinkText = "Oppskrifter";
     beveragesLinkText = "Vin";
 
-    private actions: {[key:string]: string};
     private component:GenericComponent;
 
     constructor(private contextService:ContextService) {
-        contextService.actions$.subscribe( actions => {
-            this.actions = actions;
-        });
         contextService.component$.subscribe( comp => {
             this.component = comp;
-            console.log(comp);
         });
     }
 

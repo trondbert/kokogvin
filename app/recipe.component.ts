@@ -14,14 +14,13 @@ export abstract class RecipeComponent extends GenericComponent {
     
     ngOnInit() {
         super.ngOnInit();
-        this.getContextService().setActions({"delete": "Slett oppskriften"});
     }
     
     getRecipeService() {
         return this.recipeService;
     }
 
-    abstract getRecipe();
+    abstract getRecipe() : Recipe;
 
     editRecipe() {
         let link = ['/recipe/' + this.getRecipe().key + '/edit/'];
