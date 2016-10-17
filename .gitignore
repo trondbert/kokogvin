@@ -5,3 +5,4 @@ logs/
 *.iml
 *.log
 *.save
+node_modules/
